@@ -36,7 +36,7 @@ Hint, things like documentation, code cleanup, higher test coverage.
 ## Run the project
 ### Setup
 - `docker-compose up -d`
-- `docker run --rm --interactive --tty --volume $PWD/jobs:/app --volume $COMPOSER_HOME:/tmp composer install`
+- `docker run --rm --interactive --tty --volume $PWD/jobs:/app --volume $COMPOSER_HOME:/tmp composer:1.7.2 install`
 - `docker-compose exec php bin/console doctrine:migrations:migrate`
 
 ## Tests
