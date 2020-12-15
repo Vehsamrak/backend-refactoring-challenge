@@ -29,7 +29,7 @@ class ZipcodeController extends AbstractController
     /**
      * @Rest\Get("/zipcode/{id}")
      *
-     * @param id
+     * @param $id
      * @throws NotFoundHttpException
      * @return View
      */

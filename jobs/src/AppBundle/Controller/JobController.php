@@ -35,7 +35,7 @@ class JobController extends AbstractController
     /**
      * @Rest\Get("/job/{id}")
      *
-     * @param id
+     * @param $id
      * @throws NotFoundHttpException
      * @return View
      */
@@ -55,7 +55,7 @@ class JobController extends AbstractController
     /**
      * @Rest\Put("/job/{id}")
      *
-     * @param id
+     * @param $id
      * @param Request $request
      * @return View
      */

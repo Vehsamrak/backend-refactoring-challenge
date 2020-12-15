@@ -76,3 +76,5 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * [Critical] Remove symfony cache directories from git
 * Cache and logs moved to projects "var" directory to follow the principle of least surprise
 * [Critical] Tests ServiceControllerTest::getOneServiceFound() and ServiceControllerTest::getOneServiceNotFound() are failed because undefined variable error in \AppBundle\Controller\ServiceController::getAction()
+* Test ZipcodeControllerTest::getOneZipcodeNotFound() failed due to wrong http code assertion
+

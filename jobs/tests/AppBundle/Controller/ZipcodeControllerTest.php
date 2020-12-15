@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\AppBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -9,13 +11,16 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ZipcodeControllerTest extends AbstractControllerTest
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->loadZipcodeFixtures();
     }
 
-    public function testGetAllZipcodes()
+    /**
+     * @test
+     */
+    public function getAllZipcodes(): void
     {
         $expected = file_get_contents('tests/Fixtures/zipcodes.json');
 
@@ -25,7 +30,10 @@ class ZipcodeControllerTest extends AbstractControllerTest
         $this->assertEquals($expected, $this->client->getResponse()->getContent());
     }
 
-    public function testGetOneZipcodeFound()
+    /**
+     * @test
+     */
+    public function getOneZipcodeFound(): void
     {
         $expected = '{"id":"01623","city":"Lommatzsch"}';
 
@@ -35,14 +43,20 @@ class ZipcodeControllerTest extends AbstractControllerTest
         $this->assertEquals($expected, $this->client->getResponse()->getContent());
     }
 
-    public function testGetOneZipcodeNotFound()
+    /**
+     * @test
+     */
+    public function getOneZipcodeNotFound(): void
     {
         $this->client->request('GET', '/zipcode/1');
 
-        $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testPostZipcodeRepeatedReturnsBadRequest()
+    /**
+     * @test
+     */
+    public function postZipcodeRepeatedReturnsBadRequest(): void
     {
         $this->client->request(
             'POST',
@@ -56,7 +70,10 @@ class ZipcodeControllerTest extends AbstractControllerTest
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testPostInvalidZipcodeReturnsBadRequest()
+    /**
+     * @test
+     */
+    public function postInvalidZipcodeReturnsBadRequest(): void
     {
         $this->client->request(
             'POST',
@@ -70,7 +87,10 @@ class ZipcodeControllerTest extends AbstractControllerTest
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testPostValidZipcodeReturnsCreated()
+    /**
+     * @test
+     */
+    public function postValidZipcodeReturnsCreated(): void
     {
         $this->client->request(
             'POST',
