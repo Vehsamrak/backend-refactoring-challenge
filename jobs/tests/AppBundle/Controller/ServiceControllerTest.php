@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\AppBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -9,13 +11,16 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ServiceControllerTest extends AbstractControllerTest
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->loadServiceFixtures();
     }
 
-    public function testGetAllServices()
+    /**
+     * @test
+     */
+    public function getAllServices(): void
     {
         $expected = file_get_contents('tests/Fixtures/services.json');
 
@@ -25,7 +30,10 @@ class ServiceControllerTest extends AbstractControllerTest
         $this->assertEquals($expected, $this->client->getResponse()->getContent());
     }
 
-    public function testGetOneServiceFound()
+    /**
+     * @test
+     */
+    public function getOneServiceFound(): void
     {
         $expected = '{"id":411070,"name":"Fensterreinigung"}';
 
@@ -35,14 +43,20 @@ class ServiceControllerTest extends AbstractControllerTest
         $this->assertEquals($expected, $this->client->getResponse()->getContent());
     }
 
-    public function testGetOneServiceNotFound()
+    /**
+     * @test
+     */
+    public function getOneServiceNotFound(): void
     {
         $this->client->request('GET', '/service/1');
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testPostServiceRepeatedReturnsBadRequest()
+    /**
+     * @test
+     */
+    public function postServiceRepeatedReturnsBadRequest(): void
     {
         $this->client->request(
             'POST',
@@ -56,7 +70,10 @@ class ServiceControllerTest extends AbstractControllerTest
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testPostInvalidServiceReturnsBadRequest()
+    /**
+     * @test
+     */
+    public function postInvalidServiceReturnsBadRequest(): void
     {
         $this->client->request(
             'POST',
@@ -70,7 +87,10 @@ class ServiceControllerTest extends AbstractControllerTest
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testPostValidServiceReturnsCreated()
+    /**
+     * @test
+     */
+    public function postValidServiceReturnsCreated(): void
     {
         $this->client->request(
             'POST',

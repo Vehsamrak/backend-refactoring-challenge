@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AppBundle\Controller;
 
 use AppBundle\Builder\Service as ServiceBuilder;
@@ -35,7 +37,7 @@ class ServiceController extends AbstractController
      */
     public function getAction($id): View
     {
-        return parent::getAction($entity);
+        return parent::getAction($id);
     }
 
     /**

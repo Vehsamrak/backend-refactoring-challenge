@@ -42,3 +42,37 @@ Hint, things like documentation, code cleanup, higher test coverage.
 ## Tests
 - `docker-compose exec php bin/console doctrine:database:create --env=test`
 - `docker-compose exec php vendor/bin/phpunit`
+
+### TODO
+* Rename Service entity to JobCategory for better expression, and to not use recerved keyword good practice. I would ask team and business side to rename it in out Domain Dictionary as well, according to DDD principle.
+* Use existing nginx container from registry instead of creating new one
+* Move passwords from docker-compose?
+* Inspect against PSRs
+* Use symfony inspection
+* Use scrutinizer inspection
+* Use scrutinizer CI
+* Test coverage 100%
+* Job when to be done use datetime, not date ?
+* check if mbstring php extension exist in php docker container
+* Remove .idea from gitignore
+* write a small documentation where you explain what you have changed and why you think your refactored code is better than the original code.
+* PlantUML diagram with data flow
+* Remove apache configuration files
+* Remove all TODOs
+* Create an errorMessageHandler
+* Use custom exceptions
+* Use DTOs instead of arrays for entities creation
+* Validate DTOs
+* Move services configuration inside bundle
+* Remove app/Resources with unused views
+* Swagger API documentation
+* Tests with AAA
+* Functional controller tests
+* [Critical] curl /job - 500. Uncaught PHP Exception (NotFoundHttpException)
+* [Critical] Wrap exceptions
+* Strict types declaration
+
+### Done
+* [Critical] Remove symfony cache directories from git
+* Cache and logs moved to projects "var" directory to follow the principle of least surprise
+* [Critical] Tests ServiceControllerTest::getOneServiceFound() and ServiceControllerTest::getOneServiceNotFound() are failed because undefined variable error in \AppBundle\Controller\ServiceController::getAction()
