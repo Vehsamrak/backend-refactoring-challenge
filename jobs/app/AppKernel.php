@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
 class AppKernel extends Kernel
 {
-    public function registerBundles()
+    public function registerBundles(): array
     {
         $bundles = [
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
@@ -39,22 +41,22 @@ class AppKernel extends Kernel
         return $bundles;
     }
 
-    public function getRootDir()
+    public function getRootDir(): string
     {
         return __DIR__;
     }
 
-    public function getCacheDir()
+    public function getCacheDir(): string
     {
-        return '/var/cache/' .$this->getEnvironment();
+        return sprintf('%s/cache/%s', $this->getVarDirectory(), $this->getEnvironment());
     }
 
-    public function getLogDir()
+    public function getLogDir(): string
     {
-        return '/var/logs';
+        return sprintf('%s/logs', $this->getVarDirectory());
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    public function registerContainerConfiguration(LoaderInterface $loader): void
     {
         $loader->load(function (ContainerBuilder $container) {
             $container->setParameter('container.autowiring.strict_mode', true);
@@ -63,5 +65,10 @@ class AppKernel extends Kernel
             $container->addObjectResource($this);
         });
         $loader->load($this->getRootDir().'/config/config_'.$this->getEnvironment().'.yml');
+    }
+
+    private function getVarDirectory(): string
+    {
+        return $this->getRootDir().'/../var';
     }
 }
