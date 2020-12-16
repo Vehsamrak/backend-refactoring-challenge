@@ -1,8 +1,8 @@
 {
-  "name": "symfony/framework-standard-edition",
+  "name": "vehsamrak/backend-refactoring-challenge",
   "license": "MIT",
   "type": "project",
-  "description": "The \"Symfony Standard Edition\" distribution",
+  "description": "Refactoring of Job application challenge",
   "autoload": {
     "psr-4": {
       "AppBundle\\": "src/AppBundle"
@@ -33,9 +33,11 @@
     "twig/twig": "^1.0||^2.0"
   },
   "require-dev": {
+    "roave/security-advisories": "dev-master",
     "doctrine/doctrine-fixtures-bundle": "^3.0",
     "sensio/generator-bundle": "^3.0",
-    "symfony/phpunit-bridge": "^3.0"
+    "symfony/phpunit-bridge": "^3.0",
+    "ext-json": "*"
   },
   "scripts": {
     "symfony-scripts": [

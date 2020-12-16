@@ -1,6 +1,8 @@
 <?php
 
-namespace Tests\AppBundle\Controller;
+declare(strict_types=1);
+
+namespace AppBundle\Tests\Controller;
 
 use AppBundle\DataFixtures\JobFixtures;
 use AppBundle\DataFixtures\ServiceFixtures;
@@ -24,12 +26,10 @@ abstract class AbstractControllerTest extends WebTestCase
      */
     protected $client;
 
-    public function setUp()
+    public function setUp(): void
     {
         $kernel = self::bootKernel();
-        $this->entityManager = $kernel->getContainer()
-            ->get('doctrine')
-            ->getManager();
+        $this->entityManager = $kernel->getContainer()->get('doctrine')->getManager();
 
         $schemaTool = new SchemaTool($this->entityManager);
         $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
@@ -39,26 +39,27 @@ abstract class AbstractControllerTest extends WebTestCase
         $this->client = self::createClient();
     }
 
-    protected function loadServiceFixtures()
+    protected function loadServiceFixtures(): void
     {
         $this->load(new ServiceFixtures());
     }
 
-    protected function loadZipcodeFixtures()
+    protected function loadZipcodeFixtures(): void
     {
         $this->load(new ZipcodeFixtures());
     }
 
-    protected function loadJobFixtures()
+    protected function loadJobFixtures(): void
     {
         $this->load(new JobFixtures());
     }
 
-    private function load(Fixture $fixture){
+    private function load(Fixture $fixture): void
+    {
         $fixture->load($this->entityManager);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 

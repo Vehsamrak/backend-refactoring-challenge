@@ -1,6 +1,8 @@
 <?php
 
-namespace Tests\AppBundle\Services;
+declare(strict_types=1);
+
+namespace AppBundle\Tests\Services;
 
 use AppBundle\Entity\Job as JobEntity;
 use AppBundle\Entity\Service as ServiceEntity;
@@ -9,8 +11,6 @@ use AppBundle\Repository\JobRepository;
 use AppBundle\Services\Job;
 use AppBundle\Services\Service;
 use AppBundle\Services\Zipcode;
-use Doctrine\ORM\EntityManagerInterface;
-use FOS\RestBundle\Tests\Functional\WebTestCase;
 use DateTime;
 
 /**

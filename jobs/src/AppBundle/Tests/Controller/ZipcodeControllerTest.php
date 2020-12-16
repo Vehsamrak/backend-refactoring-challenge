@@ -2,29 +2,31 @@
 
 declare(strict_types=1);
 
-namespace Tests\AppBundle\Controller;
+namespace AppBundle\Tests\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @group functional
  */
-class ServiceControllerTest extends AbstractControllerTest
+class ZipcodeControllerTest extends AbstractControllerTest
 {
+    private const FIXTURE_PATH = __DIR__.'/fixtures/zipcodes.json';
+
     public function setUp(): void
     {
         parent::setUp();
-        $this->loadServiceFixtures();
+        $this->loadZipcodeFixtures();
     }
 
     /**
      * @test
      */
-    public function getAllServices(): void
+    public function getAllZipcodes(): void
     {
-        $expected = file_get_contents('tests/Fixtures/services.json');
+        $expected = file_get_contents(self::FIXTURE_PATH);
 
-        $this->client->request('GET', '/service');
+        $this->client->request('GET', '/zipcode');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertEquals($expected, $this->client->getResponse()->getContent());
@@ -33,11 +35,11 @@ class ServiceControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function getOneServiceFound(): void
+    public function getOneZipcodeFound(): void
     {
-        $expected = '{"id":411070,"name":"Fensterreinigung"}';
+        $expected = '{"id":"01623","city":"Lommatzsch"}';
 
-        $this->client->request('GET', '/service/411070');
+        $this->client->request('GET', '/zipcode/01623');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertEquals($expected, $this->client->getResponse()->getContent());
@@ -46,9 +48,9 @@ class ServiceControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function getOneServiceNotFound(): void
+    public function getOneZipcodeNotFound(): void
     {
-        $this->client->request('GET', '/service/1');
+        $this->client->request('GET', '/zipcode/1');
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
     }
@@ -56,15 +58,15 @@ class ServiceControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function postServiceRepeatedReturnsBadRequest(): void
+    public function postZipcodeRepeatedReturnsBadRequest(): void
     {
         $this->client->request(
             'POST',
-            '/service',
+            '/zipcode',
             [],
             [],
             ['CONTENT-TYPE' => 'application/json'],
-            '{"id": 804040, "name": "Sonstige Umzugsleistungen"}'
+            '{"id": "01623", "city": "Lommatzsch"}'
         );
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
@@ -73,15 +75,15 @@ class ServiceControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function postInvalidServiceReturnsBadRequest(): void
+    public function postInvalidZipcodeReturnsBadRequest(): void
     {
         $this->client->request(
             'POST',
-            '/service',
+            '/zipcode',
             [],
             [],
             ['CONTENT-TYPE' => 'application/json'],
-            '{"id": 123, "name": ""}'
+            '{"id": "123", "city": ""}'
         );
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
@@ -90,15 +92,15 @@ class ServiceControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function postValidServiceReturnsCreated(): void
+    public function postValidZipcodeReturnsCreated(): void
     {
         $this->client->request(
             'POST',
-            '/service',
+            '/zipcode',
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            '{"id": 123, "name": "New Service"}'
+            '{"id": "12345", "city": "Valid city"}'
         );
 
         $this->assertEquals(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());

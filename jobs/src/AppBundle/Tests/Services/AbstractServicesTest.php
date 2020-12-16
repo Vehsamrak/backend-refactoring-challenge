@@ -1,9 +1,11 @@
 <?php
 
-namespace Tests\AppBundle\Services;
+declare(strict_types=1);
+
+namespace AppBundle\Tests\Services;
 
 use Doctrine\ORM\EntityManagerInterface;
-use FOS\RestBundle\Tests\Functional\WebTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 abstract class AbstractServicesTest extends WebTestCase
 {

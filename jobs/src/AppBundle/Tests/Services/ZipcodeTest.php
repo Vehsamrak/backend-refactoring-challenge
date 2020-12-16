@@ -1,6 +1,8 @@
 <?php
 
-namespace Tests\AppBundle\Services;
+declare(strict_types=1);
+
+namespace AppBundle\Tests\Services;
 
 use AppBundle\Entity\Zipcode as ZipcodeEntity;
 use AppBundle\Repository\ZipcodeRepository;

@@ -71,10 +71,14 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * [Critical] curl /job - 500. Uncaught PHP Exception (NotFoundHttpException)
 * [Critical] Wrap exceptions
 * Strict types declaration
+* Fix phpdocs everywhere
+* Move fixtures to tests namespace
+* Declare return and argument types everywhere
 
 ### Done
 * [Critical] Remove symfony cache directories from git
 * Cache and logs moved to projects "var" directory to follow the principle of least surprise
 * [Critical] Tests ServiceControllerTest::getOneServiceFound() and ServiceControllerTest::getOneServiceNotFound() are failed because undefined variable error in \AppBundle\Controller\ServiceController::getAction()
 * Test ZipcodeControllerTest::getOneZipcodeNotFound() failed due to wrong http code assertion
-
+* Package "roave/securityadvisories" added to composer to ensure application doesn't have installed dependencies with known security vulnerabilities.
+* Move tests inside bundle
