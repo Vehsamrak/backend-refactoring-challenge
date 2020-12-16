@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ServiceControllerTest extends AbstractControllerTest
 {
-    private const FIXTURE_PATH = __DIR__.'/fixtures/services.json';
+    private const FIXTURE_PATH = __DIR__.'/ResponseFixtures/services.json';
 
     public function setUp(): void
     {

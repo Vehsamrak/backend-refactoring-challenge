@@ -1,20 +1,20 @@
 <?php
 
-namespace AppBundle\DataFixtures;
+declare(strict_types=1);
+
+namespace AppBundle\Tests\Controller\EntityFixtures;
 
 use AppBundle\Entity\Job;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use DateTime;
 
 class JobFixtures extends Fixture
 {
     /**
-     * Load data fixtures with the passed EntityManager
-     *
-     * @param ObjectManager $manager
+     * @inheritDoc
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $job = new Job(
             804040,

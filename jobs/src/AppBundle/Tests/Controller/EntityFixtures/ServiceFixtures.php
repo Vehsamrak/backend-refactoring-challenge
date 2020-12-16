@@ -1,19 +1,19 @@
 <?php
 
-namespace AppBundle\DataFixtures;
+declare(strict_types=1);
+
+namespace AppBundle\Tests\Controller\EntityFixtures;
 
 use AppBundle\Entity\Service;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
 class ServiceFixtures extends Fixture
 {
     /**
-     * Load data fixtures with the passed EntityManager
-     *
-     * @param ObjectManager $manager
+     * @inheritDoc
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $service1 = new Service(804040, 'Sonstige Umzugsleistungen');
         $service2 = new Service(802030, 'Abtransport, Entsorgung und Entrümpelung');

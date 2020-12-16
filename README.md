@@ -72,7 +72,6 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * [Critical] Wrap exceptions
 * Strict types declaration
 * Fix phpdocs everywhere
-* Move fixtures to tests namespace
 * Declare return and argument types everywhere
 
 ### Done
@@ -82,3 +81,4 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Test ZipcodeControllerTest::getOneZipcodeNotFound() failed due to wrong http code assertion
 * Package "roave/securityadvisories" added to composer to ensure application doesn't have installed dependencies with known security vulnerabilities.
 * Move tests inside bundle
+* Move fixtures to tests namespace

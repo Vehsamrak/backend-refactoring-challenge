@@ -1,19 +1,19 @@
 <?php
 
-namespace AppBundle\DataFixtures;
+declare(strict_types=1);
+
+namespace AppBundle\Tests\Controller\EntityFixtures;
 
 use AppBundle\Entity\Zipcode;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
 class ZipcodeFixtures extends Fixture
 {
     /**
-     * Load data fixtures with the passed EntityManager
-     *
-     * @param ObjectManager $manager
+     * @inheritDoc
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $zipcode1 = new Zipcode('10115', 'Berlin');
         $zipcode2 = new Zipcode('32457', 'Porta Westfalica');
