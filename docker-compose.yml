@@ -29,5 +29,5 @@ services:
   composer:
     image: composer:1.7.2
     volumes:
-      - "./jobs/:/app"
+      - ./jobs/:/app
     command: install
