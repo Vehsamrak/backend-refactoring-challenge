@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\JobCategoryRepository")
- * @ORM\Table(name="service")
+ * @ORM\Table(name="job_category")
  */
 class JobCategory implements EntityInterface
 {
