@@ -76,6 +76,7 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * [Internal] Check all API routes in api.http (after tests)
 * Get rid of static methods
 * Generate entity ids on backend instead of client
+* Persist database volumes, so they shall not be deleted when containers stops 
 
 ### In progress
 
@@ -89,4 +90,6 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Move fixtures to tests namespace
 * Static services and builders removed from controllers. DI used instead. Controllers configured as services
 * Builders renamed to factories and became non static
-* Rename Service entity to JobCategory for better expression, and to "not use recerved keyword" good practice. I would ask team and business side to rename it in out Domain Dictionary as well, according to DDD principle.
+* Rename Service entity to JobCategory for better expression, and to "not use recerved keyword" good practice. I would ask team and business side to rename it in out Domain Dictionary as well, according to DDD principle. Rename table name as well.
+* Remove duplicated foreign keys (job_ibfk_3, job_ibfk_4). They are cascade, and can cause data loss in related tables
+* Semantically rename foreign keys (job_ibfk_1, job_ibfk_2)

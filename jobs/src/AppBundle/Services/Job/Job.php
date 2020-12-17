@@ -50,7 +50,7 @@ class Job extends AbstractService
     {
         $sql = "SELECT * FROM job WHERE created_at BETWEEN NOW() - INTERVAL 30 DAY AND NOW()";
         if (!empty($params['service'])) {
-            $sql .= ' AND service_id = ' . $params['service'];
+            $sql .= ' AND category_id = ' . $params['service'];
         }
 
         if (!empty($params['zipcode'])) {

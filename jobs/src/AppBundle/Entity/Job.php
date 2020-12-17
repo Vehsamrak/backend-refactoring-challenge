@@ -10,6 +10,13 @@ use Datetime;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\JobRepository")
+ * @ORM\Table(
+ *     name="job",
+ *     indexes={
+ *         @ORM\Index(name="fk__job__category_id", columns={"category_id"}),
+ *         @ORM\Index(name="fk__job__zipcode_id", columns={"zipcode_id"})
+ *     }
+ * )
  */
 class Job implements EntityInterface
 {
@@ -22,9 +29,9 @@ class Job implements EntityInterface
 
     // TODO[petr]: return entity
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="category_id")
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\JobCategory")
-     * @ORM\JoinColumn(nullable=false, name="service_id", referencedColumnName="id")
+     * @ORM\JoinColumn(nullable=false, referencedColumnName="id")
      * @Assert\NotBlank()
      */
     private $service_id;
