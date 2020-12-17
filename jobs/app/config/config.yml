@@ -60,6 +60,7 @@ doctrine:
         auto_mapping: true
 
 # Swiftmailer Configuration
+# TODO[petr]: remove this
 swiftmailer:
     transport: '%mailer_transport%'
     host: '%mailer_host%'
