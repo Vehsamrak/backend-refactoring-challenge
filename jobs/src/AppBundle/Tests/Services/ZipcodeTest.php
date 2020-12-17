@@ -6,7 +6,7 @@ namespace AppBundle\Tests\Services;
 
 use AppBundle\Entity\Zipcode as ZipcodeEntity;
 use AppBundle\Repository\ZipcodeRepository;
-use AppBundle\Services\Zipcode;
+use AppBundle\Services\Zipcode\Zipcode;
 
 /**
  * @group unit

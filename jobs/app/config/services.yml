@@ -60,30 +60,21 @@ services:
         arguments:
         - AppBundle:Job
 
-    AppBundle\Services\Service:
-        class: AppBundle\Services\Service
+    AppBundle\Services\JobCategory\Service:
         public: true
 
-    AppBundle\Services\Zipcode:
-        class: AppBundle\Services\Zipcode
+    AppBundle\Services\Zipcode\Zipcode:
         public: true
 
     AppBundle\Services\Job\Job:
-        class: AppBundle\Services\Job\Job
         public: true
 
     AppBundle\Controller\JobController:
         public: true
-        arguments:
-            $jobService: '@AppBundle\Services\Job\Job'
 
     # TODO[petr]: rename service
     AppBundle\Controller\ServiceController:
         public: true
-        arguments:
-            $serviceService: '@AppBundle\Services\Service'
 
     AppBundle\Controller\ZipcodeController:
         public: true
-        arguments:
-            $zipService: '@AppBundle\Services\ZipCode'

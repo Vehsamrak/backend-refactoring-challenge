@@ -1,8 +1,9 @@
 <?php
 
-namespace AppBundle\Services;
+namespace AppBundle\Services\JobCategory;
 
 use AppBundle\Repository\ServiceRepository;
+use AppBundle\Services\AbstractService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class Service extends AbstractService

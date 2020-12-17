@@ -9,8 +9,8 @@ use AppBundle\Entity\Service as ServiceEntity;
 use AppBundle\Entity\Zipcode as ZipcodeEntity;
 use AppBundle\Repository\JobRepository;
 use AppBundle\Services\Job\Job;
-use AppBundle\Services\Service;
-use AppBundle\Services\Zipcode;
+use AppBundle\Services\JobCategory\Service;
+use AppBundle\Services\Zipcode\Zipcode;
 use DateTime;
 
 /**

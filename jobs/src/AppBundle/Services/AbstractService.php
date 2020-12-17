@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AppBundle\Services;
 
 use AppBundle\Entity\EntityInterface;
@@ -11,6 +13,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 
+// TODO[petr]: refactor to decouple this class from services
 abstract class AbstractService
 {
     /**

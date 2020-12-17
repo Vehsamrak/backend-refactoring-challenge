@@ -1,14 +1,15 @@
 <?php
 
-namespace AppBundle\Builder;
+declare(strict_types=1);
+
+namespace AppBundle\Services\Zipcode;
 
 use AppBundle\Entity\EntityInterface;
 use AppBundle\Entity\Zipcode as ZipcodeEntity;
 
-class Zipcode implements BuilderInterface
+class ZipcodeFactory
 {
-
-    public static function build(array $parameters): EntityInterface
+    public function create(array $parameters): EntityInterface
     {
         $attributes = [];
         $attributes['id'] = $parameters['id'] ?? null;

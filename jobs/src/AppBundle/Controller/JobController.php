@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AppBundle\Controller;
 
 use AppBundle\Services\Job\Job;
@@ -29,9 +31,10 @@ class JobController extends AbstractController
      */
     public function getAllFilteringAction(Request $request): Response
     {
-        $all = $this->jobService->findAll($request->query->all());
-
-        return new JsonResponse($all, Response::HTTP_OK);
+        return new JsonResponse(
+            $this->jobService->findAll($request->query->all()),
+            Response::HTTP_OK
+        );
     }
 
     /**

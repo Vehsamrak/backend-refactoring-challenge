@@ -1,13 +1,15 @@
 <?php
 
-namespace AppBundle\Builder;
+declare(strict_types=1);
 
-use AppBundle\Entity\EntityInterface;
+namespace AppBundle\Services\JobCategory;
+
 use AppBundle\Entity\Service as EntityService;
+use AppBundle\Entity\Service;
 
-class Service implements BuilderInterface
+class JobCategoryFactory
 {
-    public static function build(array $parameters): EntityInterface
+    public function create(array $parameters): Service
     {
         $attributes = [];
         $attributes['id'] = $parameters['id'] ?? null;

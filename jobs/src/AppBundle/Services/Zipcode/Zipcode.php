@@ -1,8 +1,11 @@
 <?php
 
-namespace AppBundle\Services;
+declare(strict_types=1);
+
+namespace AppBundle\Services\Zipcode;
 
 use AppBundle\Repository\ZipcodeRepository;
+use AppBundle\Services\AbstractService;
 use Doctrine\ORM\EntityManagerInterface;
 
 class Zipcode extends AbstractService

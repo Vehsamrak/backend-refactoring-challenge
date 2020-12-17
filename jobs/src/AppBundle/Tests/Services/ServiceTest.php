@@ -6,7 +6,7 @@ namespace AppBundle\Tests\Services;
 
 use AppBundle\Entity\Service as ServiceEntity;
 use AppBundle\Repository\ServiceRepository;
-use AppBundle\Services\Service;
+use AppBundle\Services\JobCategory\Service;
 
 /**
  * @group unit
