@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="AppBundle\Repository\ServiceRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\JobCategoryRepository")
+ * @ORM\Table(name="service")
  */
-class Service implements EntityInterface
+class JobCategory implements EntityInterface
 {
     /**
      * @ORM\Id()

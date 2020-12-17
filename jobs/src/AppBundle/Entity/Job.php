@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -18,9 +20,10 @@ class Job implements EntityInterface
      */
     private $id;
 
+    // TODO[petr]: return entity
     /**
      * @ORM\Column(type="integer")
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Service")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\JobCategory")
      * @ORM\JoinColumn(nullable=false, name="service_id", referencedColumnName="id")
      * @Assert\NotBlank()
      */

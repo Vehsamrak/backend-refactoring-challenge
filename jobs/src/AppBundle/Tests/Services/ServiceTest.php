@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace AppBundle\Tests\Services;
 
-use AppBundle\Entity\Service as ServiceEntity;
-use AppBundle\Repository\ServiceRepository;
+use AppBundle\Entity\JobCategory;
+use AppBundle\Repository\JobCategoryRepository;
 use AppBundle\Services\JobCategory\Service;
 
 /**
@@ -14,24 +14,24 @@ use AppBundle\Services\JobCategory\Service;
 class ServiceTest extends AbstractServicesTest
 {
     /**
-     * @var ServiceRepository
+     * @var JobCategoryRepository
      */
     private $serviceRepository;
 
     /**
-     * @var ServiceEntity
+     * @var JobCategory
      */
     protected $defaultServiceEntity;
 
     public function setUp()
     {
         parent::setUp();
-        $this->serviceRepository = $this->getMockBuilder(ServiceRepository::class)
+        $this->serviceRepository = $this->getMockBuilder(JobCategoryRepository::class)
             ->disableOriginalConstructor()
             ->setMethods(['findAll', 'find'])
             ->getMock();
 
-        $this->defaultServiceEntity = new ServiceEntity(1, 'service');
+        $this->defaultServiceEntity = new JobCategory(1, 'service');
     }
 
     public function testFindAllWithoutValueReturnsEmptyArray()
@@ -91,7 +91,7 @@ class ServiceTest extends AbstractServicesTest
             ->method('flush');
 
         $service = new Service($this->serviceRepository, $this->entityManager);
-        $service->create(new ServiceEntity(1, ''));
+        $service->create(new JobCategory(1, ''));
     }
 
     /**

@@ -44,7 +44,6 @@ Hint, things like documentation, code cleanup, higher test coverage.
 - `docker-compose exec php vendor/bin/phpunit`
 
 ### TODO
-* Rename Service entity to JobCategory for better expression, and to "not use recerved keyword" good practice. I would ask team and business side to rename it in out Domain Dictionary as well, according to DDD principle.
 * Use existing nginx container from registry instead of creating new one
 * Move passwords from docker-compose?
 * Inspect against PSRs
@@ -74,10 +73,11 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Fix phpdocs everywhere
 * Declare return and argument types everywhere
 * Check if post action works on initial project before changes
+* [Internal] Check all API routes in api.http (after tests)
 * Get rid of static methods
+* Generate entity ids on backend instead of client
 
 ### In progress
-* Rename builders to factories. Make them non static.
 
 ### Done
 * [Critical] Remove symfony cache directories from git
@@ -88,3 +88,5 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Move tests inside bundle
 * Move fixtures to tests namespace
 * Static services and builders removed from controllers. DI used instead. Controllers configured as services
+* Builders renamed to factories and became non static
+* Rename Service entity to JobCategory for better expression, and to "not use recerved keyword" good practice. I would ask team and business side to rename it in out Domain Dictionary as well, according to DDD principle.

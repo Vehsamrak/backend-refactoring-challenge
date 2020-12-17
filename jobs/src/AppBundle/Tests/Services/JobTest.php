@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AppBundle\Tests\Services;
 
 use AppBundle\Entity\Job as JobEntity;
-use AppBundle\Entity\Service as ServiceEntity;
+use AppBundle\Entity\JobCategory;
 use AppBundle\Entity\Zipcode as ZipcodeEntity;
 use AppBundle\Repository\JobRepository;
 use AppBundle\Services\Job\Job;
@@ -157,7 +157,7 @@ class JobTest extends AbstractServicesTest
         $this->service
             ->expects($this->once())
             ->method('find')
-            ->will($this->returnValue(new ServiceEntity()))
+            ->will($this->returnValue(new JobCategory()))
             ->with(802031);
         $this->zipcode
             ->method('find')
@@ -190,7 +190,7 @@ class JobTest extends AbstractServicesTest
         $this->service
             ->expects($this->once())
             ->method('find')
-            ->will($this->returnValue(new ServiceEntity()))
+            ->will($this->returnValue(new JobCategory()))
             ->with(802031);
         $this->zipcode
             ->method('find')
@@ -227,7 +227,7 @@ class JobTest extends AbstractServicesTest
         $this->service
             ->expects($this->once())
             ->method('find')
-            ->will($this->returnValue(new ServiceEntity()))
+            ->will($this->returnValue(new JobCategory()))
             ->with(802031);
         $this->zipcode
             ->method('find')
@@ -259,7 +259,7 @@ class JobTest extends AbstractServicesTest
         $this->service
             ->expects($this->once())
             ->method('find')
-            ->will($this->returnValue(new ServiceEntity()))
+            ->will($this->returnValue(new JobCategory()))
             ->with(802031);
         $this->zipcode
             ->method('find')

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AppBundle\Tests\Controller;
 
 use AppBundle\Tests\Controller\EntityFixtures\JobFixtures;
-use AppBundle\Tests\Controller\EntityFixtures\ServiceFixtures;
+use AppBundle\Tests\Controller\EntityFixtures\JobCategoryFixtures;
 use AppBundle\Tests\Controller\EntityFixtures\ZipcodeFixtures;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
@@ -41,7 +41,7 @@ abstract class AbstractControllerTest extends WebTestCase
 
     protected function loadServiceFixtures(): void
     {
-        $this->load(new ServiceFixtures());
+        $this->load(new JobCategoryFixtures());
     }
 
     protected function loadZipcodeFixtures(): void
