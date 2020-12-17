@@ -2,9 +2,9 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Builder\Job as JobBuilder;
-use AppBundle\Services\Job;
-use FOS\RestBundle\View\View;
+use AppBundle\Services\Job\Job;
+use AppBundle\Services\Job\JobFactory;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -12,63 +12,74 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 
 class JobController extends AbstractController
 {
-    public function __construct()
+    private $jobService;
+
+    private $jobFactory;
+
+    public function __construct(Job $jobService, JobFactory $jobFactory)
     {
-        $this->serviceName = Job::class;
-        $this->builder = JobBuilder::class;
+        $this->jobService = $jobService;
+        $this->jobFactory = $jobFactory;
     }
 
     /**
      * @Rest\Get("/job")
-     *
      * @param Request $request
-     * @return View
+     * @return Response
      */
-    public function getAllFilteringAction(Request $request): View
+    public function getAllFilteringAction(Request $request): Response
     {
-        return new View(
-            $this->container->get($this->serviceName)->findAll($request->query->all()),
-            Response::HTTP_OK
-        );
+        $all = $this->jobService->findAll($request->query->all());
+
+        return new JsonResponse($all, Response::HTTP_OK);
     }
 
     /**
      * @Rest\Get("/job/{id}")
-     *
      * @param $id
+     * @return Response
      * @throws NotFoundHttpException
-     * @return View
      */
-    public function getAction($id): View
+    public function getAction($id): Response
     {
-        return parent::getAction($id);
+        $entity = $this->jobService->find($id);
+        if (!$entity) {
+            // TODO[petr]: Use ErrorResponse
+            throw new NotFoundHttpException(
+                sprintf('The resource \'%s\' was not found.', $id)
+            );
+        }
+
+        return new JsonResponse($entity, Response::HTTP_OK);
     }
 
     /**
      * @Rest\Post("/job")
+     * @param Request $request
+     * @return Response
      */
-    public function postAction(Request $request): View
+    public function postAction(Request $request): Response
     {
-        return parent::postAction($request);
+        $parameters = $request->request->all();
+        $job = $this->jobFactory->create($parameters);
+        $persistedEntity = $this->jobService->create($job);
+
+        return new JsonResponse($persistedEntity, Response::HTTP_CREATED);
     }
 
     /**
      * @Rest\Put("/job/{id}")
-     *
-     * @param $id
+     * @param string  $id
      * @param Request $request
-     * @return View
+     * @return Response
      */
-    public function putAction(String $id, Request $request): View
+    public function putAction(string $id, Request $request): Response
     {
         $params = $request->request->all();
         $params['id'] = $id;
-        $entity = $this->builder::build($params);
-        $persistedEntity = $this->container->get($this->serviceName)->update($entity);
+        $job = $this->jobFactory->create($params);
+        $persistedEntity = $this->jobService->update($job);
 
-        return new View(
-            $persistedEntity,
-            Response::HTTP_OK
-        );
+        return new JsonResponse($persistedEntity, Response::HTTP_OK);
     }
 }

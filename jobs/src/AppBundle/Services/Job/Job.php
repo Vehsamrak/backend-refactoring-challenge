@@ -1,9 +1,12 @@
 <?php
 
-namespace AppBundle\Services;
+namespace AppBundle\Services\Job;
 
 use AppBundle\Entity\EntityInterface;
 use AppBundle\Repository\JobRepository;
+use AppBundle\Services\AbstractService;
+use AppBundle\Services\Service;
+use AppBundle\Services\Zipcode;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

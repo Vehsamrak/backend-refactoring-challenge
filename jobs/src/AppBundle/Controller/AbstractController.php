@@ -2,13 +2,13 @@
 
 namespace AppBundle\Controller;
 
-use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-abstract class AbstractController extends FOSRestController
+abstract class AbstractController extends AbstractFOSRestController
 {
     /**
      * @var String
@@ -21,9 +21,9 @@ abstract class AbstractController extends FOSRestController
     protected $builder;
 
     /**
-     * @return View
+     * @deprecated
      */
-    public function getAllAction(): View
+    public function getAllAction()
     {
         return new View(
             $this->container->get($this->serviceName)->findAll(),
@@ -33,9 +33,9 @@ abstract class AbstractController extends FOSRestController
 
     /**
      * @param $id
-     * @return View
+     * @deprecated
      */
-    public function getAction($id): View
+    public function getAction($id)
     {
         $entity = $this->container->get($this->serviceName)->find($id);
         if (!$entity) {
@@ -53,9 +53,9 @@ abstract class AbstractController extends FOSRestController
 
     /**
      * @param Request $request
-     * @return View
+     * @deprecated
      */
-    public function postAction(Request $request): View
+    public function postAction(Request $request)
     {
         $parameters = $request->request->all();
         $entity = $this->builder::build($parameters);

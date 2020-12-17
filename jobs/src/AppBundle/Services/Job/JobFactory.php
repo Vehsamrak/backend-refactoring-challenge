@@ -1,14 +1,13 @@
 <?php
 
-namespace AppBundle\Builder;
+namespace AppBundle\Services\Job;
 
-use AppBundle\Entity\EntityInterface;
-use AppBundle\Entity\Job as JobEntity;
+use AppBundle\Entity\Job;
 use DateTime;
 
-class Job implements BuilderInterface
+class JobFactory
 {
-    public static function build(array $parameters): EntityInterface
+    public function create(array $parameters): Job
     {
         $attributes = [];
         $attributes['serviceId'] = $parameters['serviceId'] ?? null;
@@ -20,7 +19,7 @@ class Job implements BuilderInterface
             : null;
         $attributes['id'] = $parameters['id'] ?? null;
 
-        return new JobEntity(
+        return new Job(
             $attributes['serviceId'],
             $attributes['zipcodeId'],
             $attributes['title'],
