@@ -94,3 +94,4 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Semantically rename foreign keys (job_ibfk_1, job_ibfk_2)
 * Port was opened in MySQL container to enable external connection (make sence if docker used only for dev-environment)
 * Type "String" renamed to "string" to follow PSR-12
+* Commented code removed from Repositories
