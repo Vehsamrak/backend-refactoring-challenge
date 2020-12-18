@@ -20,3 +20,6 @@ services:
         class: Doctrine\ORM\EntityManager
         factory_service: doctrine.orm.entity_manager
         factory_method: getManager
+
+    AppBundle\Controller\AbstractController:
+        abstract: true

@@ -4,24 +4,29 @@ declare(strict_types=1);
 
 namespace AppBundle\Controller;
 
-use AppBundle\Services\Zipcode\Zipcode;
-use AppBundle\Services\Zipcode\ZipcodeFactory;
+use AppBundle\Entity\Zipcode;
+use AppBundle\Services\Zipcode\Zipcode as ZipcodeService;
+use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ZipcodeController extends AbstractController
 {
     private $zipcodeService;
 
-    private $zipcodeFactory;
-
-    public function __construct(Zipcode $zipcodeService, ZipcodeFactory $zipcodeFactory)
-    {
+    public function __construct(
+        ZipcodeService $zipcodeService,
+        EntityManagerInterface $entityManager,
+        SerializerInterface $serializer,
+        ValidatorInterface $validator
+    ) {
+        parent::__construct($entityManager, $serializer, $validator);
         $this->zipcodeService = $zipcodeService;
-        $this->zipcodeFactory = $zipcodeFactory;
     }
 
     /**
@@ -58,10 +63,6 @@ class ZipcodeController extends AbstractController
      */
     public function postAction(Request $request): Response
     {
-        $parameters = $request->request->all();
-        $zipcode = $this->zipcodeFactory->create($parameters);
-        $persistedEntity = $this->zipcodeService->create($zipcode);
-
-        return new JsonResponse($persistedEntity, Response::HTTP_CREATED);
+        return $this->validateAndSave($request, Zipcode::class);
     }
 }

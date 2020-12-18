@@ -16,62 +16,63 @@ class ServiceTest extends AbstractServicesTest
     /**
      * @var JobCategoryRepository
      */
-    private $serviceRepository;
+    private $jobCategoryRepository;
 
     /**
      * @var JobCategory
      */
-    protected $defaultServiceEntity;
+    protected $defaultJobCategoryEntity;
 
     public function setUp()
     {
         parent::setUp();
-        $this->serviceRepository = $this->getMockBuilder(JobCategoryRepository::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['findAll', 'find'])
-            ->getMock();
+        $this->jobCategoryRepository =
+            $this->getMockBuilder(JobCategoryRepository::class)
+                 ->disableOriginalConstructor()
+                 ->setMethods(['findAll', 'find'])
+                 ->getMock();
 
-        $this->defaultServiceEntity = new JobCategory(1, 'service');
+        $this->defaultJobCategoryEntity = new JobCategory(1, 'service');
     }
 
     public function testFindAllWithoutValueReturnsEmptyArray()
     {
-        $this->serviceRepository
+        $this->jobCategoryRepository
             ->expects($this->once())
             ->method('findAll')
             ->will($this->returnValue([]));
 
-        $service = new Service($this->serviceRepository, $this->entityManager);
+        $service = new Service($this->jobCategoryRepository, $this->entityManager);
         $this->assertEmpty($service->findAll());
     }
 
     public function testFindAllWithServicesFoundReturnsArrayWithServices()
     {
-        $this->serviceRepository
+        $this->jobCategoryRepository
             ->expects($this->once())
             ->method('findAll')
-            ->will($this->returnValue([$this->defaultServiceEntity]));
+            ->will($this->returnValue([$this->defaultJobCategoryEntity]));
 
-        $service = new Service($this->serviceRepository, $this->entityManager);
-        $this->assertEquals([$this->defaultServiceEntity], $service->findAll());
+        $service = new Service($this->jobCategoryRepository, $this->entityManager);
+        $this->assertEquals([$this->defaultJobCategoryEntity], $service->findAll());
     }
 
     public function testFindWhenServiceIsNotFoundReturnsNull()
     {
-        $service = new Service($this->serviceRepository, $this->entityManager);
+        $service = new Service($this->jobCategoryRepository, $this->entityManager);
         $this->assertNull($service->find(1));
     }
 
     public function testFindWhenServiceIsFoundReturnsService()
     {
-        $this->serviceRepository
+        $this->jobCategoryRepository
             ->expects($this->once())
             ->method('find')
-            ->will($this->returnValue($this->defaultServiceEntity))
+            ->will($this->returnValue($this->defaultJobCategoryEntity))
             ->with(1);
 
-        $service = new Service($this->serviceRepository, $this->entityManager);
-        $this->assertEquals($this->defaultServiceEntity, $service->find(1));
+        $service = new Service($this->jobCategoryRepository, $this->entityManager);
+        $this->assertEquals($this->defaultJobCategoryEntity, $service->find(1));
     }
 
     /**
@@ -80,7 +81,7 @@ class ServiceTest extends AbstractServicesTest
      */
     public function testCreateWithInvalidServiceThrowsBadRequestHttpException()
     {
-        $this->serviceRepository
+        $this->jobCategoryRepository
             ->expects($this->never())
             ->method('find');
         $this->entityManager
@@ -90,7 +91,7 @@ class ServiceTest extends AbstractServicesTest
             ->expects($this->never())
             ->method('flush');
 
-        $service = new Service($this->serviceRepository, $this->entityManager);
+        $service = new Service($this->jobCategoryRepository, $this->entityManager);
         $service->create(new JobCategory(1, ''));
     }
 
@@ -100,10 +101,10 @@ class ServiceTest extends AbstractServicesTest
      */
     public function testCreateWithDuplicatedServiceThrowsBadRequestHttpException()
     {
-        $this->serviceRepository
+        $this->jobCategoryRepository
             ->expects($this->once())
             ->method('find')
-            ->will($this->returnValue($this->defaultServiceEntity))
+            ->will($this->returnValue($this->defaultJobCategoryEntity))
             ->with(1);
         $this->entityManager
             ->expects($this->never())
@@ -112,13 +113,13 @@ class ServiceTest extends AbstractServicesTest
             ->expects($this->never())
             ->method('flush');
 
-        $service = new Service($this->serviceRepository, $this->entityManager);
-        $service->create($this->defaultServiceEntity);
+        $service = new Service($this->jobCategoryRepository, $this->entityManager);
+        $service->create($this->defaultJobCategoryEntity);
     }
 
     public function testCreateWithValidServiceReturnsPersistedService()
     {
-        $this->serviceRepository
+        $this->jobCategoryRepository
             ->expects($this->once())
             ->method('find')
             ->will($this->returnValue(null))
@@ -126,12 +127,12 @@ class ServiceTest extends AbstractServicesTest
         $this->entityManager
             ->expects($this->once())
             ->method('persist')
-            ->with($this->defaultServiceEntity);
+            ->with($this->defaultJobCategoryEntity);
         $this->entityManager
             ->expects($this->once())
             ->method('flush');
 
-        $service = new Service($this->serviceRepository, $this->entityManager);
-        $service->create($this->defaultServiceEntity);
+        $service = new Service($this->jobCategoryRepository, $this->entityManager);
+        $service->create($this->defaultJobCategoryEntity);
     }
 }

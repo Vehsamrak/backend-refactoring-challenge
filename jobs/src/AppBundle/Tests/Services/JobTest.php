@@ -157,7 +157,7 @@ class JobTest extends AbstractServicesTest
         $this->service
             ->expects($this->once())
             ->method('find')
-            ->will($this->returnValue(new JobCategory()))
+            ->will($this->returnValue(new JobCategory(802031, '')))
             ->with(802031);
         $this->zipcode
             ->method('find')
@@ -190,7 +190,7 @@ class JobTest extends AbstractServicesTest
         $this->service
             ->expects($this->once())
             ->method('find')
-            ->will($this->returnValue(new JobCategory()))
+            ->will($this->returnValue(new JobCategory(802031, '')))
             ->with(802031);
         $this->zipcode
             ->method('find')
@@ -227,7 +227,7 @@ class JobTest extends AbstractServicesTest
         $this->service
             ->expects($this->once())
             ->method('find')
-            ->will($this->returnValue(new JobCategory()))
+            ->will($this->returnValue(new JobCategory(802031, '')))
             ->with(802031);
         $this->zipcode
             ->method('find')
@@ -259,7 +259,7 @@ class JobTest extends AbstractServicesTest
         $this->service
             ->expects($this->once())
             ->method('find')
-            ->will($this->returnValue(new JobCategory()))
+            ->will($this->returnValue(new JobCategory(802031, '')))
             ->with(802031);
         $this->zipcode
             ->method('find')

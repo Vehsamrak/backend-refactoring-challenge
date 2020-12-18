@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace AppBundle\Controller;
 
-use AppBundle\Services\Job\Job;
+use AppBundle\Entity\Job;
+use AppBundle\Services\Job\Job as JobService;
 use AppBundle\Services\Job\JobFactory;
+use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class JobController extends AbstractController
 {
@@ -18,8 +22,14 @@ class JobController extends AbstractController
 
     private $jobFactory;
 
-    public function __construct(Job $jobService, JobFactory $jobFactory)
-    {
+    public function __construct(
+        JobService $jobService,
+        JobFactory $jobFactory,
+        EntityManagerInterface $entityManager,
+        SerializerInterface $serializer,
+        ValidatorInterface $validator
+    ) {
+        parent::__construct($entityManager, $serializer, $validator);
         $this->jobService = $jobService;
         $this->jobFactory = $jobFactory;
     }
@@ -63,13 +73,10 @@ class JobController extends AbstractController
      */
     public function postAction(Request $request): Response
     {
-        $parameters = $request->request->all();
-        $job = $this->jobFactory->create($parameters);
-        $persistedEntity = $this->jobService->create($job);
-
-        return new JsonResponse($persistedEntity, Response::HTTP_CREATED);
+        return $this->validateAndSave($request, Job::class);
     }
 
+    // TODO[petr]: refactor method
     /**
      * @Rest\Put("/job/{id}")
      * @param string  $id

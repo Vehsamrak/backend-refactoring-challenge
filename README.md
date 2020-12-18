@@ -45,14 +45,12 @@ Hint, things like documentation, code cleanup, higher test coverage.
 
 ### TODO
 * Use existing nginx container from registry instead of creating new one
-* Move passwords from docker-compose?
 * Inspect against PSRs
 * Use symfony inspection
 * Use scrutinizer inspection
 * Use scrutinizer CI
 * Test coverage 100%
-* Job when to be done use datetime, not date ?
-* check if mbstring php extension exist in php docker container
+* "Job when to be done" use datetime, not date ?
 * Remove .idea from gitignore
 * write a small documentation where you explain what you have changed and why you think your refactored code is better than the original code.
 * PlantUML diagram with data flow
@@ -60,7 +58,6 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Remove all TODOs
 * Create an errorMessageHandler
 * Use custom exceptions
-* Use DTOs instead of arrays for entities creation
 * Validate DTOs
 * Move services configuration inside bundle
 * Remove app/Resources with unused views
@@ -76,9 +73,11 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * [Internal] Check all API routes in api.http (after tests)
 * Get rid of static methods
 * Generate entity ids on backend instead of client
-* Persist database volumes, so they shall not be deleted when containers stops 
+* Persist database volumes, so they shall not be deleted when containers stops
+* Property names in entities formatted to camelCase, to follow PSR-1 (consistency with properties in other classes).
 
 ### In progress
+* Use DTOs instead of arrays for entities creation. JMSSerializer is used for deserialization, while JsonSerializable interface is used for serialization, because native serialization is much faster (no library overhead) and simpler to use for client code (less code, no dependencies, json_encode support).
 
 ### Done
 * [Critical] Remove symfony cache directories from git
@@ -93,3 +92,5 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Rename Service entity to JobCategory for better expression, and to "not use recerved keyword" good practice. I would ask team and business side to rename it in out Domain Dictionary as well, according to DDD principle. Rename table name as well.
 * Remove duplicated foreign keys (job_ibfk_3, job_ibfk_4). They are cascade, and can cause data loss in related tables
 * Semantically rename foreign keys (job_ibfk_1, job_ibfk_2)
+* Port was opened in MySQL container to enable external connection (make sence if docker used only for dev-environment)
+* Type "String" renamed to "string" to follow PSR-12

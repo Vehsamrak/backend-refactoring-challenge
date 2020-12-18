@@ -9,9 +9,11 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @group functional
  */
-class ServiceControllerTest extends AbstractControllerTest
+class JobCategoryControllerTest extends AbstractControllerTest
 {
-    private const FIXTURE_PATH = __DIR__.'/ResponseFixtures/services.json';
+    private const FIXTURE_PATH = __DIR__.'/ResponseFixtures';
+    private const FIXTURE_PATH_ALL_CATEGORIES = self::FIXTURE_PATH.'/allJobCategories.json';
+    private const FIXTURE_PATH_ONE_CATEGORY = self::FIXTURE_PATH.'/oneJobCategory.json';
 
     public function setUp(): void
     {
@@ -22,9 +24,9 @@ class ServiceControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function getAllServices(): void
+    public function getAllCategories(): void
     {
-        $expected = file_get_contents(self::FIXTURE_PATH);
+        $expected = trim(file_get_contents(self::FIXTURE_PATH_ALL_CATEGORIES));
 
         $this->client->request('GET', '/service');
 
@@ -35,9 +37,9 @@ class ServiceControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function getOneServiceFound(): void
+    public function getOneCategoryFound(): void
     {
-        $expected = '{"id":411070,"name":"Fensterreinigung"}';
+        $expected = trim(file_get_contents(self::FIXTURE_PATH_ONE_CATEGORY));
 
         $this->client->request('GET', '/service/411070');
 
@@ -48,7 +50,7 @@ class ServiceControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function getOneServiceNotFound(): void
+    public function getOneCategoryNotFound(): void
     {
         $this->client->request('GET', '/service/1');
 
@@ -58,7 +60,7 @@ class ServiceControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function postServiceRepeatedReturnsBadRequest(): void
+    public function postCategoryRepeatedReturnsBadRequest(): void
     {
         $this->client->request(
             'POST',
@@ -75,7 +77,7 @@ class ServiceControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function postInvalidServiceReturnsBadRequest(): void
+    public function postInvalidCategoryReturnsBadRequest(): void
     {
         $this->client->request(
             'POST',
@@ -92,7 +94,7 @@ class ServiceControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function postValidServiceReturnsCreated(): void
+    public function postValidCategoryReturnsCreated(): void
     {
         $this->client->request(
             'POST',

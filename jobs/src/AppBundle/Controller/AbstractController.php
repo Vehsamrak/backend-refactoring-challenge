@@ -1,69 +1,63 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AppBundle\Controller;
 
-use FOS\RestBundle\Controller\AbstractFOSRestController;
-use FOS\RestBundle\View\View;
+use AppBundle\Dto\ValidationErrorResponse;
+use AppBundle\Exception\ClassNotFoundException;
+use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\Exception\RuntimeException as JMSRuntimeException;
+use JMS\Serializer\SerializerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-abstract class AbstractController extends AbstractFOSRestController
+abstract class AbstractController
 {
-    /**
-     * @var String
-     */
-    protected $serviceName;
+    private $serializer;
 
-    /**
-     * @var String
-     */
-    protected $builder;
+    private $entityManager;
 
-    /**
-     * @deprecated
-     */
-    public function getAllAction()
-    {
-        return new View(
-            $this->container->get($this->serviceName)->findAll(),
-            Response::HTTP_OK
-        );
-    }
+    private $validator;
 
-    /**
-     * @param $id
-     * @deprecated
-     */
-    public function getAction($id)
-    {
-        $entity = $this->container->get($this->serviceName)->find($id);
-        if (!$entity) {
-            throw new NotFoundHttpException(sprintf(
-                'The resource \'%s\' was not found.',
-                $id
-            ));
-        }
-
-        return new View(
-            $entity,
-            Response::HTTP_OK
-        );
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        SerializerInterface $serializer,
+        ValidatorInterface $validator
+    ) {
+        $this->entityManager = $entityManager;
+        $this->serializer = $serializer;
+        $this->validator = $validator;
     }
 
     /**
      * @param Request $request
-     * @deprecated
+     * @param string  $entityClassName
+     * @return JsonResponse
+     * @throws ClassNotFoundException
      */
-    public function postAction(Request $request)
+    protected function validateAndSave(Request $request, string $entityClassName): JsonResponse
     {
-        $parameters = $request->request->all();
-        $entity = $this->builder::build($parameters);
-        $persistedEntity = $this->container->get($this->serviceName)->create($entity);
+        if (!class_exists($entityClassName)) {
+            throw new ClassNotFoundException($entityClassName);
+        }
 
-        return new View(
-            $persistedEntity,
-            Response::HTTP_CREATED
-        );
+        try {
+            $entity = $this->serializer->deserialize($request->getContent(), $entityClassName, 'json');
+        } catch (JMSRuntimeException $JMSException) {
+            return new JsonResponse('JSON is malformed', Response::HTTP_BAD_REQUEST);
+        }
+
+        $validationErrors = $this->validator->validate($entity);
+        if (count($validationErrors) > 0) {
+            return new ValidationErrorResponse($validationErrors);
+        }
+
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+
+        return new JsonResponse($entity, Response::HTTP_CREATED);
     }
 }

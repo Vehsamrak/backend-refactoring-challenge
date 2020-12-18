@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AppBundle\Entity;
 
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Datetime;
@@ -80,11 +81,11 @@ class Job implements EntityInterface
 
     public function __construct(
         int $serviceId = null,
-        String $zipcodeId = null,
-        String $title = null,
-        String $description = null,
-        \DateTimeInterface $dateToBeDone = null,
-        String $id = null
+        string $zipcodeId = null,
+        string $title = null,
+        string $description = null,
+        DateTimeInterface $dateToBeDone = null,
+        string $id = null
     ) {
         $this->service_id = $serviceId;
         $this->zipcode_id = $zipcodeId;
@@ -112,41 +113,41 @@ class Job implements EntityInterface
     }
 
     /**
-     * @return null|String
+     * @return null|string
      */
-    public function getZipcodeId(): ?String
+    public function getZipcodeId(): ?string
     {
         return $this->zipcode_id;
     }
 
     /**
-     * @return null|String
+     * @return null|string
      */
-    public function getTitle(): ?String
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
     /**
-     * @return null|String
+     * @return null|string
      */
-    public function getDescription(): ?String
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @return DateTimeInterface|null
      */
-    public function getDateToBeDone(): ?\DateTimeInterface
+    public function getDateToBeDone(): ?DateTimeInterface
     {
         return $this->date_to_be_done;
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @return DateTimeInterface|null
      */
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->created_at;
     }

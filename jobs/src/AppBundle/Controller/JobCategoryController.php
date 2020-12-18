@@ -4,33 +4,39 @@ declare(strict_types=1);
 
 namespace AppBundle\Controller;
 
-use AppBundle\Services\JobCategory\JobCategoryFactory;
+use AppBundle\Entity\JobCategory;
 use AppBundle\Services\JobCategory\Service;
+use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class ServiceController extends AbstractController
+class JobCategoryController extends AbstractController
 {
-    private $serviceService;
+    private $jobCategoryService;
 
-    private $jobCategoryFactory;
-
-    public function __construct(Service $serviceService, JobCategoryFactory $jobCategoryFactory)
-    {
-        $this->serviceService = $serviceService;
-        $this->jobCategoryFactory = $jobCategoryFactory;
+    public function __construct(
+        Service $jobCategoryService,
+        EntityManagerInterface $entityManager,
+        SerializerInterface $serializer,
+        ValidatorInterface $validator
+    ) {
+        parent::__construct($entityManager, $serializer, $validator);
+        $this->jobCategoryService = $jobCategoryService;
     }
 
+    // TODO[petr]: rename api path to category
     /**
      * @Rest\Get("/service")
      * @return Response
      */
     public function getAllAction(): Response
     {
-        $all = $this->serviceService->findAll();
+        $all = $this->jobCategoryService->findAll();
 
         return new JsonResponse($all, Response::HTTP_OK);
     }
@@ -44,7 +50,7 @@ class ServiceController extends AbstractController
     public function getAction($id): Response
     {
         // TODO[petr]: rename entity
-        $entity = $this->serviceService->find($id);
+        $entity = $this->jobCategoryService->find($id);
 
         if (!$entity) {
             throw new NotFoundHttpException(
@@ -62,10 +68,6 @@ class ServiceController extends AbstractController
      */
     public function postAction(Request $request): Response
     {
-        $parameters = $request->request->all();
-        $jobCategory = $this->jobCategoryFactory->create($parameters);
-        $persistedEntity = $this->serviceService->create($jobCategory);
-
-        return new JsonResponse($persistedEntity, Response::HTTP_CREATED);
+        return $this->validateAndSave($request, JobCategory::class);
     }
 }

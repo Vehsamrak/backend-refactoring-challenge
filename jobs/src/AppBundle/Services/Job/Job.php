@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace AppBundle\Services\Job;
 
 use AppBundle\Entity\EntityInterface;
@@ -48,6 +50,7 @@ class Job extends AbstractService
      */
     public function findAll(array $params = []): array
     {
+        // TODO[petr]: move to repository
         $sql = "SELECT * FROM job WHERE created_at BETWEEN NOW() - INTERVAL 30 DAY AND NOW()";
         if (!empty($params['service'])) {
             $sql .= ' AND category_id = ' . $params['service'];
