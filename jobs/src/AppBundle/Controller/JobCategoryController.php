@@ -29,9 +29,8 @@ class JobCategoryController extends AbstractController
         $this->jobCategoryService = $jobCategoryService;
     }
 
-    // TODO[petr]: rename api path to category
     /**
-     * @Rest\Get("/service")
+     * @Rest\Get("/category")
      * @return Response
      */
     public function getAllAction(): Response
@@ -42,7 +41,7 @@ class JobCategoryController extends AbstractController
     }
 
     /**
-     * @Rest\Get("/service/{id}")
+     * @Rest\Get("/category/{id}")
      * @param int id
      * @return Response
      * @throws NotFoundHttpException
@@ -62,7 +61,7 @@ class JobCategoryController extends AbstractController
     }
 
     /**
-     * @Rest\Post("/service")
+     * @Rest\Post("/category")
      * @param Request $request
      * @return Response
      */

@@ -28,7 +28,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
     {
         $expected = trim(file_get_contents(self::FIXTURE_PATH_ALL_CATEGORIES));
 
-        $this->client->request('GET', '/service');
+        $this->client->request('GET', '/category');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertEquals($expected, $this->client->getResponse()->getContent());
@@ -41,7 +41,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
     {
         $expected = trim(file_get_contents(self::FIXTURE_PATH_ONE_CATEGORY));
 
-        $this->client->request('GET', '/service/411070');
+        $this->client->request('GET', '/category/411070');
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertEquals($expected, $this->client->getResponse()->getContent());
@@ -52,7 +52,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
      */
     public function getOneCategoryNotFound(): void
     {
-        $this->client->request('GET', '/service/1');
+        $this->client->request('GET', '/category/1');
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
     }
@@ -64,7 +64,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
     {
         $this->client->request(
             'POST',
-            '/service',
+            '/category',
             [],
             [],
             ['CONTENT-TYPE' => 'application/json'],
@@ -81,7 +81,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
     {
         $this->client->request(
             'POST',
-            '/service',
+            '/category',
             [],
             [],
             ['CONTENT-TYPE' => 'application/json'],
@@ -98,7 +98,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
     {
         $this->client->request(
             'POST',
-            '/service',
+            '/category',
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],

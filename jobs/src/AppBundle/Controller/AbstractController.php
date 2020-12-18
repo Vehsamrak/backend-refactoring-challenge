@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace AppBundle\Controller;
 
 use AppBundle\Dto\ValidationErrorResponse;
+use AppBundle\Entity\EntityInterface;
 use AppBundle\Exception\ClassNotFoundException;
+use AppBundle\Exception\NotEntityException;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\Exception\RuntimeException as JMSRuntimeException;
 use JMS\Serializer\SerializerInterface;
@@ -44,6 +46,10 @@ abstract class AbstractController
             throw new ClassNotFoundException($entityClassName);
         }
 
+        if (!$this->isEntity($entityClassName)) {
+            throw new NotEntityException($entityClassName);
+        }
+
         try {
             $entity = $this->serializer->deserialize($request->getContent(), $entityClassName, 'json');
         } catch (JMSRuntimeException $JMSException) {
@@ -59,5 +65,10 @@ abstract class AbstractController
         $this->entityManager->flush();
 
         return new JsonResponse($entity, Response::HTTP_CREATED);
+    }
+
+    private function isEntity(string $entityClassName): bool
+    {
+        return in_array(EntityInterface::class, class_implements($entityClassName), true);
     }
 }
