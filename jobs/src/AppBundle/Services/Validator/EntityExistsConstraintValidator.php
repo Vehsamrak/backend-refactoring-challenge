@@ -27,7 +27,6 @@ class EntityExistsConstraintValidator extends ConstraintValidator
      */
     public function validate($entityId, Constraint $constraint): void
     {
-        return;
         if (!$constraint instanceof EntityExistsConstraint) {
             throw new UnexpectedTypeException($constraint, EntityExistsConstraint::class);
         }

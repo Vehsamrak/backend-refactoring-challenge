@@ -14,7 +14,7 @@ abstract class AbstractServicesTest extends WebTestCase
      */
     protected $entityManager;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->entityManager = $this->getMockBuilder(EntityManagerInterface::class)
             ->disableOriginalConstructor()

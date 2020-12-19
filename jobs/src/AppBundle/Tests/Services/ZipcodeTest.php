@@ -23,7 +23,7 @@ class ZipcodeTest extends AbstractServicesTest
      */
     protected $defaultZipcodeEntity;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->zipcodeRepository = $this->getMockBuilder(ZipcodeRepository::class)

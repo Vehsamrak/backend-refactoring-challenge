@@ -43,7 +43,7 @@ class JobTest extends AbstractServicesTest
      */
     private $persistedEntity;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->repository = $this->getMockBuilder(JobRepository::class)
