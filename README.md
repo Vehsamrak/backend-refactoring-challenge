@@ -98,3 +98,4 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Serialization used for entities creation, instead of arrays mapping. JMSSerializer is used for deserialization, while JsonSerializable interface is used for serialization, because native serialization is much faster (no library overhead) and simpler to use for client code (less code, no dependencies, json_encode support).
 * Builders removed in sake of serialization. Requests are serialized directly to entities. DTOs weren't used because in current case only annotation would differ them from existing entities. I would use DTO if there are endpoints with different request parameters, different validation, or if objects must be transfered to external bundle.  
 * Remove app/Resources with unused views
+* [Critical] TargetEntity property in ORM\ManyToOne annotation in Job entity has typo. Fixed to valid related entity classname.

@@ -53,7 +53,7 @@ class Job implements EntityInterface, JsonSerializable
 
     /**
      * @ORM\Column(type="string", length=5, options={"fixed" = true})
-     * @ORM\ManyToOne(targetEntity="App\Entity\Zipdcode")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Zipcode")
      * @ORM\JoinColumn(nullable=false, name="category_id", referencedColumnName="id")
      * @Assert\Length(
      *      min = 5,
@@ -64,7 +64,7 @@ class Job implements EntityInterface, JsonSerializable
      * @Assert\NotBlank(message="Zipcode should not be blank")
      * @AppBundle\Services\Validator\EntityExistsConstraint(
      *     name="Zipcode",
-     *     entityClassName="App\Entity\Zipdcode"
+     *     entityClassName="AppBundle\Entity\Zipcode"
      * )
      * @JMS\Type("integer")
      * @JMS\SerializedName("zipcodeId")
