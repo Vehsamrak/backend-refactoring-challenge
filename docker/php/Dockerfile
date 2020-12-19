@@ -14,13 +14,11 @@ RUN echo "xdebug.remote_connect_back=1" >> /usr/local/etc/php/conf.d/docker-php-
 RUN echo "xdebug.idekey=\"PHPSTORM\"" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "xdebug.remote_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-RUN echo 'alias sf3="php bin/console"' >> ~/.bashrc
-
 WORKDIR /var/www/jobs
 
-RUN mkdir /var/cache/prod
-RUN mkdir /var/logs
+RUN mkdir -p /var/www/jobs/var/cache/prod
+RUN mkdir -p /var/www/jobs/var/logs
 RUN mkdir /var/sessions
-RUN chown -R www-data:www-data /var/cache
-RUN chown -R www-data:www-data /var/logs
+RUN chown -R www-data:www-data /var/www/jobs/var/cache/prod
+RUN chown -R www-data:www-data /var/www/jobs/var/logs
 RUN chown -R www-data:www-data /var/sessions
