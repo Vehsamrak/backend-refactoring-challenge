@@ -60,7 +60,6 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Use custom exceptions
 * Validate DTOs
 * Move services configuration inside bundle
-* Remove app/Resources with unused views
 * Swagger API documentation
 * Tests with AAA
 * Functional controller tests
@@ -99,3 +98,4 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * New unit tests naming strtegy applies pattern: "methodUnderTest_GivenState_ExpectedResult". Try-catch block used in tests instead of @expectedException annotation, to achieve AAA-pattern.
 * Validate existing related entities on job creation
 * Use DTOs instead of arrays for entities creation. JMSSerializer is used for deserialization, while JsonSerializable interface is used for serialization, because native serialization is much faster (no library overhead) and simpler to use for client code (less code, no dependencies, json_encode support).
+* Remove app/Resources with unused views
