@@ -14,4 +14,9 @@ class JobRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Job::class);
     }
+
+    public function findById(string $id): ?Job
+    {
+        return $this->find($id);
+    }
 }

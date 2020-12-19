@@ -75,9 +75,9 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Generate entity ids on backend instead of client
 * Persist database volumes, so they shall not be deleted when containers stops
 * Property names in entities formatted to camelCase, to follow PSR-1 (consistency with properties in other classes).
+* Run migrations on test database
 
 ### In progress
-* Use DTOs instead of arrays for entities creation. JMSSerializer is used for deserialization, while JsonSerializable interface is used for serialization, because native serialization is much faster (no library overhead) and simpler to use for client code (less code, no dependencies, json_encode support).
 
 ### Done
 * [Critical] Remove symfony cache directories from git
@@ -95,3 +95,7 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Port was opened in MySQL container to enable external connection (make sence if docker used only for dev-environment)
 * Type "String" renamed to "string" to follow PSR-12
 * Commented code removed from Repositories
+* Job entity validation moved to validator class
+* New unit tests naming strtegy applies pattern: "methodUnderTest_GivenState_ExpectedResult". Try-catch block used in tests instead of @expectedException annotation, to achieve AAA-pattern.
+* Validate existing related entities on job creation
+* Use DTOs instead of arrays for entities creation. JMSSerializer is used for deserialization, while JsonSerializable interface is used for serialization, because native serialization is much faster (no library overhead) and simpler to use for client code (less code, no dependencies, json_encode support).

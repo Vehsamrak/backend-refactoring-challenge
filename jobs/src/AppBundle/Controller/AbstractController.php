@@ -12,7 +12,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\Exception\RuntimeException as JMSRuntimeException;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -35,13 +34,38 @@ abstract class AbstractController
     }
 
     /**
-     * @param Request $request
-     * @param string  $entityClassName
+     * @param string $entityDataJson
+     * @param string $entityClassName
      * @return JsonResponse
      * @throws ClassNotFoundException
      */
-    protected function validateAndSave(Request $request, string $entityClassName): JsonResponse
+    protected function validateAndCreate(string $entityDataJson, string $entityClassName): JsonResponse
     {
+        return $this->validateAndUpsert($entityDataJson, $entityClassName, true);
+    }
+
+    /**
+     * @param string $entityDataJson
+     * @param string $entityClassName
+     * @return JsonResponse
+     * @throws ClassNotFoundException
+     */
+    protected function validateAndUpdate(string $entityDataJson, string $entityClassName): JsonResponse
+    {
+        return $this->validateAndUpsert($entityDataJson, $entityClassName, false);
+    }
+
+    /**
+     * @param string $entityDataJson
+     * @param string $entityClassName
+     * @param bool   $isEntityNew
+     * @return JsonResponse
+     */
+    protected function validateAndUpsert(
+        string $entityDataJson,
+        string $entityClassName,
+        bool $isEntityNew
+    ): JsonResponse {
         if (!class_exists($entityClassName)) {
             throw new ClassNotFoundException($entityClassName);
         }
@@ -49,9 +73,10 @@ abstract class AbstractController
         if (!$this->isEntity($entityClassName)) {
             throw new NotEntityException($entityClassName);
         }
+        
 
         try {
-            $entity = $this->serializer->deserialize($request->getContent(), $entityClassName, 'json');
+            $entity = $this->serializer->deserialize($entityDataJson, $entityClassName, 'json');
         } catch (JMSRuntimeException $JMSException) {
             return new JsonResponse('JSON is malformed', Response::HTTP_BAD_REQUEST);
         }
@@ -61,10 +86,23 @@ abstract class AbstractController
             return new ValidationErrorResponse($validationErrors);
         }
 
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        if ($isEntityNew) {
+            $this->entityManager->persist($entity);
+            $returnCode = Response::HTTP_CREATED;
+        } else {
+            $this->entityManager->merge($entity);
+            $returnCode = Response::HTTP_OK;
+        }
 
-        return new JsonResponse($entity, Response::HTTP_CREATED);
+        try {
+            $this->entityManager->flush();
+        } catch (\Throwable $exception) {
+            // TODO[petr]: remove dump
+            var_dump($exception->getMessage());
+            die;
+        }
+        
+        return new JsonResponse($entity, $returnCode);
     }
 
     private function isEntity(string $entityClassName): bool

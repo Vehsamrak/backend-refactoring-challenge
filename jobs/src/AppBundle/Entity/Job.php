@@ -6,7 +6,11 @@ namespace AppBundle\Entity;
 
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
+use Doctrine\ORM\Mapping\PrePersist;
+use JsonSerializable;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as JMS;
 use Datetime;
 
 /**
@@ -18,22 +22,32 @@ use Datetime;
  *         @ORM\Index(name="fk__job__zipcode_id", columns={"zipcode_id"})
  *     }
  * )
+ * @HasLifecycleCallbacks
  */
-class Job implements EntityInterface
+class Job implements EntityInterface, JsonSerializable
 {
     /**
      * @ORM\Id()
      * @ORM\Column(name="id", type="guid")
      * @ORM\GeneratedValue(strategy="UUID")
+     * @JMS\Type("string")
+     * @JMS\SerializedName("id")
      */
     private $id;
 
     // TODO[petr]: return entity
+    // TODO[petr]: rename property
     /**
      * @ORM\Column(type="integer", name="category_id")
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\JobCategory")
      * @ORM\JoinColumn(nullable=false, referencedColumnName="id")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Job category should not be blank")
+     * @AppBundle\Services\Validator\EntityExistsConstraint(
+     *     name="Job category",
+     *     entityClassName="AppBundle\Entity\JobCategory"
+     * )
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("serviceId")
      */
     private $service_id;
 
@@ -47,7 +61,13 @@ class Job implements EntityInterface
      *      minMessage = "The zipcode_id must have exactly 5 characters",
      *      maxMessage = "The zipcode_id must have exactly 5 characters"
      * )
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Zipcode should not be blank")
+     * @AppBundle\Services\Validator\EntityExistsConstraint(
+     *     name="Zipcode",
+     *     entityClassName="App\Entity\Zipdcode"
+     * )
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("zipcodeId")
      */
     private $zipcode_id;
 
@@ -59,18 +79,24 @@ class Job implements EntityInterface
      *      minMessage = "The title must more than 4 characters",
      *      maxMessage = "The title must have less than 51 characters"
      * )
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Title should not be blank")
+     * @JMS\Type("string")
+     * @JMS\SerializedName("title")
      */
     private $title;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @JMS\Type("string")
+     * @JMS\SerializedName("description")
      */
     private $description;
 
     /**
      * @ORM\Column(type="date")
      * @Assert\Date()
+     * @JMS\Type("DateTime<'Y-m-d'>")
+     * @JMS\SerializedName("dateToBeDone")
      */
     private $date_to_be_done;
 
@@ -79,6 +105,7 @@ class Job implements EntityInterface
      */
     private $created_at;
 
+    // TODO[petr]: refactor nullables
     public function __construct(
         int $serviceId = null,
         string $zipcodeId = null,
@@ -150,5 +177,34 @@ class Job implements EntityInterface
     public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->created_at;
+    }
+
+    /**
+     * @PrePersist
+     */
+    public function resetCreatedAt(): void
+    {
+        $this->created_at = $this->created_at ?? new DateTime();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'service_id' => $this->service_id,
+            'zipcode_id' => $this->zipcode_id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'date_to_be_done' => $this->date_to_be_done,
+            'created_at' => $this->created_at,
+            'id' => $this->id,
+        ];
     }
 }

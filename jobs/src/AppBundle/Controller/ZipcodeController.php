@@ -63,6 +63,6 @@ class ZipcodeController extends AbstractController
      */
     public function postAction(Request $request): Response
     {
-        return $this->validateAndSave($request, Zipcode::class);
+        return $this->validateAndCreate($request->getContent(), Zipcode::class);
     }
 }

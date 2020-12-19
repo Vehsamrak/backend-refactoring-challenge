@@ -67,6 +67,6 @@ class JobCategoryController extends AbstractController
      */
     public function postAction(Request $request): Response
     {
-        return $this->validateAndSave($request, JobCategory::class);
+        return $this->validateAndCreate($request->getContent(), JobCategory::class);
     }
 }

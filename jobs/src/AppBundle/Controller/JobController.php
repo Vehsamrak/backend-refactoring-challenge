@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Job;
+use AppBundle\Repository\JobRepository;
 use AppBundle\Services\Job\Job as JobService;
 use AppBundle\Services\Job\JobFactory;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,17 +23,23 @@ class JobController extends AbstractController
 
     private $jobFactory;
 
+    private $jobRepository;
+
     public function __construct(
         JobService $jobService,
         JobFactory $jobFactory,
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        JobRepository $jobRepository
     ) {
         parent::__construct($entityManager, $serializer, $validator);
         $this->jobService = $jobService;
         $this->jobFactory = $jobFactory;
+        $this->jobRepository = $jobRepository;
     }
+
+    // TODO[petr]: test response
 
     /**
      * @Rest\Get("/job")
@@ -41,6 +48,7 @@ class JobController extends AbstractController
      */
     public function getAllFilteringAction(Request $request): Response
     {
+        // TODO[petr]: refactor method to use query builder
         return new JsonResponse(
             $this->jobService->findAll($request->query->all()),
             Response::HTTP_OK
@@ -73,10 +81,9 @@ class JobController extends AbstractController
      */
     public function postAction(Request $request): Response
     {
-        return $this->validateAndSave($request, Job::class);
+        return $this->validateAndCreate($request->getContent(), Job::class);
     }
 
-    // TODO[petr]: refactor method
     /**
      * @Rest\Put("/job/{id}")
      * @param string  $id
@@ -85,11 +92,11 @@ class JobController extends AbstractController
      */
     public function putAction(string $id, Request $request): Response
     {
-        $params = $request->request->all();
-        $params['id'] = $id;
-        $job = $this->jobFactory->create($params);
-        $persistedEntity = $this->jobService->update($job);
+        $job = $this->jobRepository->findById($id);
+        if (null === $job) {
+            return new JsonResponse('Job not found', Response::HTTP_NOT_FOUND);
+        }
 
-        return new JsonResponse($persistedEntity, Response::HTTP_OK);
+        return $this->validateAndUpdate(json_encode($job), Job::class);
     }
 }
