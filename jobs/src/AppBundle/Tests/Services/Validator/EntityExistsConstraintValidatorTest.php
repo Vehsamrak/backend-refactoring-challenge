@@ -60,7 +60,7 @@ class EntityExistsConstraintValidatorTest extends TestCase
     ): void {
         $constraint = $this->createConstraint($entityClassName);
         $validator = $this->createValidator();
-        $validValue = null;
+        $validValue = self::ENTITY_EXISTING_ID;
         $exception = null;
 
         try {

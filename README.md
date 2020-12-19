@@ -82,19 +82,19 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Cache and logs moved to projects "var" directory to follow the principle of least surprise
 * [Critical] Tests ServiceControllerTest::getOneServiceFound() and ServiceControllerTest::getOneServiceNotFound() are failed because undefined variable error in \AppBundle\Controller\ServiceController::getAction()
 * Test ZipcodeControllerTest::getOneZipcodeNotFound() failed due to wrong http code assertion
-* Package "roave/securityadvisories" added to composer to ensure application doesn't have installed dependencies with known security vulnerabilities.
+* Package "roave/securityadvisories" added to dependencies, to ensure application doesn't have installed dependencies with known security vulnerabilities.
 * Move tests inside bundle
 * Move fixtures to tests namespace
 * Static services and builders removed from controllers. DI used instead. Controllers configured as services
 * Builders renamed to factories and became non static
-* Rename Service entity to JobCategory for better expression, and to "not use recerved keyword" good practice. I would ask team and business side to rename it in out Domain Dictionary as well, according to DDD principle. Rename table as well.
+* Rename Service entity to JobCategory for better expression, and not to use reserved keyword. I would ask team and business side to rename it in Domain Dictionary as well, according to DDD principle. Rename MySQL table as well.
 * Remove duplicated foreign keys (job_ibfk_3, job_ibfk_4). They are cascade, and can cause data loss in related tables
 * Semantically rename foreign keys (job_ibfk_1, job_ibfk_2)
 * Port was opened in MySQL container to enable external connection (make sence if docker used only for dev-environment)
 * Type "String" renamed to "string" to follow PSR-12
 * Commented code removed from Repositories
-* Job entity validation moved to validator class
+* Job entity validation moved to validator class. New custom validation constraint annotation implemented
 * New unit tests naming strtegy applies pattern: "methodUnderTest_GivenState_ExpectedResult". Try-catch block used in tests instead of @expectedException annotation, to achieve AAA-pattern.
-* Validate existing related entities on job creation
-* Use DTOs instead of arrays for entities creation. JMSSerializer is used for deserialization, while JsonSerializable interface is used for serialization, because native serialization is much faster (no library overhead) and simpler to use for client code (less code, no dependencies, json_encode support).
+* Serialization used for entities creation, instead of arrays mapping. JMSSerializer is used for deserialization, while JsonSerializable interface is used for serialization, because native serialization is much faster (no library overhead) and simpler to use for client code (less code, no dependencies, json_encode support).
+* Builders removed in sake of serialization. Requests are serialized directly to entities. DTOs weren't used because in current case only annotation would differ them from existing entities. I would use DTO if there are endpoints with different request parameters, different validation, or if objects must be transfered to external bundle.  
 * Remove app/Resources with unused views
