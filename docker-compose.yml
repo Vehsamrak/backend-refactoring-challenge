@@ -18,6 +18,8 @@ services:
     restart: always
     ports:
       - 3308:3306
+    volumes:
+      - backend_refactoring_challenge_db_data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: jobs
@@ -29,7 +31,10 @@ services:
     depends_on:
       - db
   composer:
-    image: composer:1.7.2
+    image: composer:2.0
     volumes:
       - ./jobs/:/app
     command: install
+
+volumes:
+  backend_refactoring_challenge_db_data:

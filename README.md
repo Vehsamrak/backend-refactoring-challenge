@@ -36,7 +36,7 @@ Hint, things like documentation, code cleanup, higher test coverage.
 ## Run the project
 ### Setup
 - `docker-compose up -d`
-- `docker run --rm --interactive --tty --volume $PWD/jobs:/app --volume $COMPOSER_HOME:/tmp composer:1.7.2 install`
+- `docker run --rm --interactive --tty --volume $PWD/jobs:/app composer:2.0 install`
 - `docker-compose exec php bin/console doctrine:migrations:migrate`
 
 ## Tests
@@ -50,7 +50,6 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Use scrutinizer inspection
 * Use scrutinizer CI
 * Test coverage 100%
-* "Job when to be done" use datetime, not date ?
 * write a small documentation where you explain what you have changed and why you think your refactored code is better than the original code.
 * PlantUML diagram with data flow
 * Remove apache configuration files
@@ -69,13 +68,13 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Check if post action works on initial project before changes
 * [Internal] Check all API routes in api.http (after tests)
 * Get rid of static methods
-* Generate entity ids on backend instead of client
-* Persist database volumes, so they shall not be deleted when containers stops
 * Property names in entities formatted to camelCase, to follow PSR-1 (consistency with properties in other classes).
 * Run migrations on test database
 * Zipcode id was string, but behave like integer. Property and column type were changed to integer
+* Export mysql configuration outside docker image
 
 ### In progress
+* Generate job entity id on backend instead of client
 
 ### Done
 * [Critical] Remove symfony cache directories from git
@@ -100,3 +99,5 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Remove app/Resources with unused views
 * [Critical] TargetEntity property in ORM\ManyToOne annotation in Job entity has typo. Fixed to valid related entity classname.
 * IDE specific ".idea" was removed from job directory gitignore. Templates for various editors and operating systems must be presented in global gitignore config, not on the project level. Root level .gitignore was truncated to reduce duplication.
+* Composer updated to 2.0. Cache volumes are stored correctly
+* Persist database volumes, so they shall not be deleted when containers stops
