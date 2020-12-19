@@ -23,3 +23,7 @@ services:
 
     AppBundle\Controller\AbstractController:
         abstract: true
+
+    AppBundle\Services\Validator\EntityExistsConstraintValidator:
+        tags:
+            - { name: validator.constraint_validator }
