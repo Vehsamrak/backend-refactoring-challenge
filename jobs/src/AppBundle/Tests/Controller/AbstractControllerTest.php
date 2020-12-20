@@ -39,7 +39,7 @@ abstract class AbstractControllerTest extends WebTestCase
         $this->client = self::createClient();
     }
 
-    protected function loadServiceFixtures(): void
+    protected function loadJobCategoryFixtures(): void
     {
         $this->load(new JobCategoryFixtures());
     }
@@ -66,5 +66,8 @@ abstract class AbstractControllerTest extends WebTestCase
         $purger = new ORMPurger($this->entityManager);
         $purger->setPurgeMode(ORMPurger::PURGE_MODE_TRUNCATE);
         $purger->purge();
+
+        $this->entityManager->close();
+        $this->entityManager = null; // avoid memory leaks
     }
 }
