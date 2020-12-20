@@ -7,19 +7,15 @@ services:
         autoconfigure: true
         public: false
 
-    AppBundle\:
-        resource: '../../src/AppBundle/*'
-        exclude: '../../src/AppBundle/{Tests}'
+    AppBundle\Services\:
+        resource: '../../src/AppBundle/Services/*'
+
+    AppBundle\Repository\:
+        resource: '../../src/AppBundle/Repository/*'
 
     AppBundle\Controller\:
         resource: '../../src/AppBundle/Controller'
-        public: true
         tags: ['controller.service_arguments']
-
-    entityManager:
-        class: Doctrine\ORM\EntityManager
-        factory_service: doctrine.orm.entity_manager
-        factory_method: getManager
 
     AppBundle\Controller\AbstractController:
         abstract: true
