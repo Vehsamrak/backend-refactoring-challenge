@@ -7,6 +7,9 @@ services:
         autoconfigure: true
         public: false
 
+    jms_serializer.camel_case_naming_strategy:
+        class: 'JMS\Serializer\Naming\IdenticalPropertyNamingStrategy'
+
     AppBundle\Services\:
         resource: '../../src/AppBundle/Services/*'
 

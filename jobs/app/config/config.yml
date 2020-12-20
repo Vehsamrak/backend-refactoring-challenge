@@ -110,5 +110,3 @@ jms_serializer:
     handlers:
         datetime:
             default_format: c
-    property_naming:
-        id: 'jms_serializer.identical_property_naming_strategy'
