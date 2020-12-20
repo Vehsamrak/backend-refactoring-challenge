@@ -73,8 +73,7 @@ class JobTest extends AbstractServicesTest
             '01621',
             'Job to be done',
             'description',
-            new DateTime('2018-11-11'),
-            'a1c59e8f-ca88-11e8-94bd-0242ac130005'
+            new DateTime('2018-11-11')
         );
     }
 
