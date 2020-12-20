@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace AppBundle\Tests\Controller;
 
+use AppBundle\Tests\Controller\EntityFixtures\JobCategoryFixtures;
+use AppBundle\Tests\Controller\EntityFixtures\JobFixtures;
+use AppBundle\Tests\Controller\EntityFixtures\ZipcodeFixtures;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -19,12 +22,12 @@ class JobControllerTest extends AbstractControllerTest
     public function setUp(): void
     {
         parent::setUp();
-        $this->loadServiceFixtures();
+        $this->loadJobCategoryFixtures();
         $this->loadZipcodeFixtures();
         $this->loadJobFixtures();
         $this->defaultJob = [
-            'serviceId' => 804040,
-            'zipcodeId' => '10115',
+            'serviceId' => JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID,
+            'zipcodeId' => ZipcodeFixtures::EXISTING_ZIPCODE_ID,
             'title' => 'title',
             'description' => 'decription',
             'dateToBeDone' => '2018-11-11',
@@ -81,7 +84,7 @@ class JobControllerTest extends AbstractControllerTest
      */
     public function postJobWithServiceNotFoundReturnsBadRequest(): void
     {
-        $this->defaultJob['serviceId'] = 12345;
+        $this->defaultJob['serviceId'] = JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID;
 
         $this->client->request(
             'POST',
@@ -100,7 +103,7 @@ class JobControllerTest extends AbstractControllerTest
      */
     public function postJobWithZipcodeNotFoundReturnsBadRequest(): void
     {
-        $this->defaultJob['zipcodeId'] = '12345';
+        $this->defaultJob['zipcodeId'] = ZipcodeFixtures::UNEXISTING_ZIPCODE_ID;
 
         $this->client->request(
             'POST',
@@ -138,7 +141,7 @@ class JobControllerTest extends AbstractControllerTest
     {
         $this->client->request(
             'PUT',
-            '/job/1',
+            sprintf('/job/%s', JobFixtures::UNEXISTING_JOB_ID),
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
@@ -153,10 +156,11 @@ class JobControllerTest extends AbstractControllerTest
      */
     public function putWithValidJobReturnsNotFound(): void
     {
-        $id = $this->getFirstJobId();
+        $jobId = $this->fetchFirstJobId();
+
         $this->client->request(
             'PUT',
-            '/job/' . $id,
+            sprintf('/job/%s', $jobId),
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
@@ -166,14 +170,11 @@ class JobControllerTest extends AbstractControllerTest
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
 
-    private function getFirstJobId(): ?string
+    private function fetchFirstJobId(): string
     {
         $this->client->request('GET', '/job');
         $allJobs = json_decode($this->client->getResponse()->getContent(), true);
 
-        // TODO[petr]: handle "not found" behaviour
-        $id = $allJobs[0]['id'] ?? null;
-
-        return $id;
+        return $allJobs[0]['id'];
     }
 }

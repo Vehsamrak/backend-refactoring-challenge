@@ -21,13 +21,11 @@ class JobController extends AbstractController
 {
     private $jobService;
 
-    private $jobFactory;
-
+    // TODO[petr]: use param converter instead
     private $jobRepository;
 
     public function __construct(
         JobService $jobService,
-        JobFactory $jobFactory,
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
@@ -35,11 +33,8 @@ class JobController extends AbstractController
     ) {
         parent::__construct($entityManager, $serializer, $validator);
         $this->jobService = $jobService;
-        $this->jobFactory = $jobFactory;
         $this->jobRepository = $jobRepository;
     }
-
-    // TODO[petr]: test response
 
     /**
      * @Rest\Get("/job")
@@ -97,6 +92,6 @@ class JobController extends AbstractController
             return new JsonResponse('Job not found', Response::HTTP_NOT_FOUND);
         }
 
-        return $this->validateAndUpdate(json_encode($job), Job::class);
+        return $this->validateAndUpdate($request->getContent(), Job::class);
     }
 }

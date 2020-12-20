@@ -18,7 +18,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
     public function setUp(): void
     {
         parent::setUp();
-        $this->loadServiceFixtures();
+        $this->loadJobCategoryFixtures();
     }
 
     /**

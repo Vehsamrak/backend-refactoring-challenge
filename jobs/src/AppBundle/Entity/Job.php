@@ -174,13 +174,13 @@ class Job implements EntityInterface, JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'service_id' => $this->serviceId,
-            'zipcode_id' => $this->zipcodeId,
+            'id' => $this->id,
+            'serviceId' => $this->serviceId,
+            'zipcodeId' => $this->zipcodeId,
             'title' => $this->title,
             'description' => $this->description,
-            'date_to_be_done' => $this->dateToBeDone,
-            'created_at' => $this->createdAt,
-            'id' => $this->id,
+            'dateToBeDone' => $this->dateToBeDone,
+            'createdAt' => $this->createdAt,
         ];
     }
 }
