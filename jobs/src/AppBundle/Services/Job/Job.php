@@ -107,17 +107,17 @@ class Job extends AbstractService
      */
     private function validateForeignKeys(JobEntity $entity): void
     {
-        if (!$this->service->find($entity->getServiceId())) {
+        if (!$this->service->find($entity->getCategory())) {
             throw new BadRequestHttpException(sprintf(
                 'Service \'%s\' was not found',
-                $entity->getServiceId()
+                $entity->getCategory()
             ));
         }
 
-        if (!$this->zipcode->find($entity->getZipcodeId())) {
+        if (!$this->zipcode->find($entity->getZipcode())) {
             throw new BadRequestHttpException(sprintf(
                 'Zipcode \'%s\' was not found',
-                $entity->getZipcodeId()
+                $entity->getZipcode()
             ));
         }
     }

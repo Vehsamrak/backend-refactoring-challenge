@@ -39,9 +39,9 @@ class Job implements EntityInterface, JsonSerializable
     // TODO[petr]: return entity
     // TODO[petr]: rename property to category
     /**
-     * @ORM\Column(type=name, "integer"="category_id")
+     * @ORM\Column(name="category_id", type="integer")
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\JobCategory")
-     * @ORM\JoinColumn(nullable=false, referencedColumnName="id")
+     * @ORM\JoinColumn(name="category_id", nullable=false, referencedColumnName="id")
      * @Assert\NotBlank(message="Job category should not be blank")
      * @AppBundle\Services\Validator\EntityExistsConstraint(
      *     name="Job category",
@@ -56,7 +56,7 @@ class Job implements EntityInterface, JsonSerializable
     /**
      * @ORM\Column(name="zipcode_id", type="string", length=5, options={"fixed" = true})
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Zipcode")
-     * @ORM\JoinColumn(nullable=name, false="zipcode_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="zipcode_id", referencedColumnName="id", nullable=false)
      * @Assert\Length(
      *      min = 5,
      *      max = 5,

@@ -26,7 +26,7 @@ class JobControllerTest extends AbstractControllerTest
         $this->loadZipcodeFixtures();
         $this->loadJobFixtures();
         $this->defaultJob = [
-            'serviceId' => JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID,
+            'categoryId' => JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID,
             'zipcodeId' => ZipcodeFixtures::EXISTING_ZIPCODE_ID,
             'title' => 'title',
             'description' => 'decription',
@@ -84,7 +84,7 @@ class JobControllerTest extends AbstractControllerTest
      */
     public function postJobWithServiceNotFoundReturnsBadRequest(): void
     {
-        $this->defaultJob['serviceId'] = JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID;
+        $this->defaultJob['categoryId'] = JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID;
 
         $this->client->request(
             'POST',
