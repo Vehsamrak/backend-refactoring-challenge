@@ -29,14 +29,15 @@ class Job implements EntityInterface, JsonSerializable
     /**
      * @ORM\Id()
      * @ORM\Column(name="id", type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="AppBundle\Services\UuidGenerator\UuidGenerator")
      * @JMS\Type("string")
      * @JMS\SerializedName("id")
      */
     private $id;
 
     // TODO[petr]: return entity
-    // TODO[petr]: rename property
+    // TODO[petr]: rename property to category
     /**
      * @ORM\Column(type="integer", name="category_id")
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\JobCategory")
@@ -49,8 +50,9 @@ class Job implements EntityInterface, JsonSerializable
      * @JMS\Type("integer")
      * @JMS\SerializedName("serviceId")
      */
-    private $service_id;
+    private $serviceId;
 
+    // TODO[petr]: return entity
     /**
      * @ORM\Column(type="string", length=5, options={"fixed" = true})
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Zipcode")
@@ -69,7 +71,7 @@ class Job implements EntityInterface, JsonSerializable
      * @JMS\Type("integer")
      * @JMS\SerializedName("zipcodeId")
      */
-    private $zipcode_id;
+    private $zipcodeId;
 
     /**
      * @ORM\Column(type="string", length=50)
@@ -98,85 +100,64 @@ class Job implements EntityInterface, JsonSerializable
      * @JMS\Type("DateTime<'Y-m-d'>")
      * @JMS\SerializedName("dateToBeDone")
      */
-    private $date_to_be_done;
+    private $dateToBeDone;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $created_at;
+    private $createdAt;
 
     // TODO[petr]: refactor nullables
     public function __construct(
-        int $serviceId = null,
-        string $zipcodeId = null,
-        string $title = null,
-        string $description = null,
-        DateTimeInterface $dateToBeDone = null,
-        string $id = null
+        ?int $serviceId = null,
+        ?string $zipcodeId = null,
+        string $title,
+        ?string $description = null,
+        ?DateTimeInterface $dateToBeDone = null
     ) {
-        $this->service_id = $serviceId;
-        $this->zipcode_id = $zipcodeId;
+        $this->serviceId = $serviceId;
+        $this->zipcodeId = $zipcodeId;
         $this->title = $title;
         $this->description = $description;
-        $this->date_to_be_done = $dateToBeDone;
-        $this->created_at = new DateTime();
-        $this->id = $id ?? $this->id;
+        $this->dateToBeDone = $dateToBeDone;
+        $this->createdAt = new DateTime();
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @return int|null
-     */
     public function getServiceId(): ?int
     {
-        return $this->service_id;
+        return $this->serviceId;
     }
 
-    /**
-     * @return null|string
-     */
     public function getZipcodeId(): ?string
     {
-        return $this->zipcode_id;
+        return $this->zipcodeId;
     }
 
-    /**
-     * @return null|string
-     */
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * @return null|string
-     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @return DateTimeInterface|null
-     */
+    // TODO[petr]: make immutable in getter
     public function getDateToBeDone(): ?DateTimeInterface
     {
-        return $this->date_to_be_done;
+        return $this->dateToBeDone;
     }
 
-    /**
-     * @return DateTimeInterface|null
-     */
+    // TODO[petr]: make immutable in getter
     public function getCreatedAt(): ?DateTimeInterface
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
@@ -184,7 +165,7 @@ class Job implements EntityInterface, JsonSerializable
      */
     public function resetCreatedAt(): void
     {
-        $this->created_at = $this->created_at ?? new DateTime();
+        $this->createdAt = $this->createdAt ?? new DateTime();
     }
 
     /**
@@ -192,18 +173,13 @@ class Job implements EntityInterface, JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return $this->toArray();
-    }
-
-    public function toArray(): array
-    {
         return [
-            'service_id' => $this->service_id,
-            'zipcode_id' => $this->zipcode_id,
+            'service_id' => $this->serviceId,
+            'zipcode_id' => $this->zipcodeId,
             'title' => $this->title,
             'description' => $this->description,
-            'date_to_be_done' => $this->date_to_be_done,
-            'created_at' => $this->created_at,
+            'date_to_be_done' => $this->dateToBeDone,
+            'created_at' => $this->createdAt,
             'id' => $this->id,
         ];
     }

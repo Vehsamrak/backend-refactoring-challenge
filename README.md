@@ -75,7 +75,7 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Add logging
 
 ### In progress
-* Generate job entity uuid on backend instead of client or database. Custom IdGenerator generator created, because Doctrine generator uses database to create UUID. Better for testing and performance to have generator on the application side.
+* Generate job entity uuid on backend instead of client or database. Custom IdGenerator generator created, because Doctrine generator uses database SELECT to create UUID. It is better for testing and performance to have generator on the application side.
 * Job entity has annotation @ORM\GeneratedValue with UUID strategy, and therefore should not have id in constructor
 
 ### Done
