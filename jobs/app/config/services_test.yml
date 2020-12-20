@@ -1,9 +1,0 @@
-services:
-    _defaults:
-        autowire: true
-        autoconfigure: true
-        public: false
-
-    AppBundle\Tests\Services\UuidGenerator\UuidGeneratorListener:
-        tags:
-            - { name: doctrine.event_listener, event: prePersist }
