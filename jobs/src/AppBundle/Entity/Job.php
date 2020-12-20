@@ -39,7 +39,7 @@ class Job implements EntityInterface, JsonSerializable
     // TODO[petr]: return entity
     // TODO[petr]: rename property to category
     /**
-     * @ORM\Column(type="integer", name="category_id")
+     * @ORM\Column(type=name, "integer"="category_id")
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\JobCategory")
      * @ORM\JoinColumn(nullable=false, referencedColumnName="id")
      * @Assert\NotBlank(message="Job category should not be blank")
@@ -48,15 +48,15 @@ class Job implements EntityInterface, JsonSerializable
      *     entityClassName="AppBundle\Entity\JobCategory"
      * )
      * @JMS\Type("integer")
-     * @JMS\SerializedName("serviceId")
+     * @JMS\SerializedName("categoryId")
      */
-    private $serviceId;
+    private $category;
 
     // TODO[petr]: return entity
     /**
-     * @ORM\Column(type="string", length=5, options={"fixed" = true})
+     * @ORM\Column(name="zipcode_id", type="string", length=5, options={"fixed" = true})
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Zipcode")
-     * @ORM\JoinColumn(nullable=false, name="category_id", referencedColumnName="id")
+     * @ORM\JoinColumn(nullable=name, false="zipcode_id", referencedColumnName="id")
      * @Assert\Length(
      *      min = 5,
      *      max = 5,
@@ -71,10 +71,10 @@ class Job implements EntityInterface, JsonSerializable
      * @JMS\Type("integer")
      * @JMS\SerializedName("zipcodeId")
      */
-    private $zipcodeId;
+    private $zipcode;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(name="title", type="string", length=50)
      * @Assert\Length(
      *      min = 5,
      *      max = 50,
@@ -88,14 +88,14 @@ class Job implements EntityInterface, JsonSerializable
     private $title;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(name="description", type="text", nullable=true)
      * @JMS\Type("string")
      * @JMS\SerializedName("description")
      */
     private $description;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(name="date_to_be_done", type="date")
      * @Assert\Date()
      * @JMS\Type("DateTime<'Y-m-d'>")
      * @JMS\SerializedName("dateToBeDone")
@@ -103,20 +103,20 @@ class Job implements EntityInterface, JsonSerializable
     private $dateToBeDone;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="created_at", type="datetime")
      */
     private $createdAt;
 
     // TODO[petr]: refactor nullables
     public function __construct(
-        ?int $serviceId = null,
+        ?int $categoryId = null,
         ?string $zipcodeId = null,
         string $title,
         ?string $description = null,
         ?DateTimeInterface $dateToBeDone = null
     ) {
-        $this->serviceId = $serviceId;
-        $this->zipcodeId = $zipcodeId;
+        $this->category = $categoryId;
+        $this->zipcode = $zipcodeId;
         $this->title = $title;
         $this->description = $description;
         $this->dateToBeDone = $dateToBeDone;
@@ -128,14 +128,14 @@ class Job implements EntityInterface, JsonSerializable
         return $this->id;
     }
 
-    public function getServiceId(): ?int
+    public function getCategory(): ?int
     {
-        return $this->serviceId;
+        return $this->category;
     }
 
-    public function getZipcodeId(): ?string
+    public function getZipcode(): ?string
     {
-        return $this->zipcodeId;
+        return $this->zipcode;
     }
 
     public function getTitle(): ?string
@@ -175,8 +175,8 @@ class Job implements EntityInterface, JsonSerializable
     {
         return [
             'id' => $this->id,
-            'serviceId' => $this->serviceId,
-            'zipcodeId' => $this->zipcodeId,
+            'categoryId' => $this->category,
+            'zipcodeId' => $this->zipcode,
             'title' => $this->title,
             'description' => $this->description,
             'dateToBeDone' => $this->dateToBeDone,

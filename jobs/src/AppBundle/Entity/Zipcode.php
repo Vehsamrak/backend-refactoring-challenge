@@ -16,7 +16,7 @@ class Zipcode implements EntityInterface, JsonSerializable
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="NONE")
-     * @ORM\Column(type="string", length=5, options={"fixed" = true}, unique=true, nullable=false)
+     * @ORM\Column(name="id", type="string", length=5, options={"fixed" = true}, unique=true, nullable=false)
      * @Assert\Length(
      *      min = 5,
      *      max = 5,
@@ -28,7 +28,7 @@ class Zipcode implements EntityInterface, JsonSerializable
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=false)
+     * @ORM\Column(name="city", type="string", length=50, nullable=false)
      * @Assert\Length(
      *      min = 3,
      *      max = 50,

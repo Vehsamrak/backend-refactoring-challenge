@@ -20,7 +20,7 @@ class JobCategory implements EntityInterface, JsonSerializable
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="NONE")
-     * @ORM\Column(type="integer", unique=true, nullable=false)
+     * @ORM\Column(name="id", type="integer", unique=true, nullable=false)
      * @JMS\Type("string")
      * @JMS\SerializedName("id")
      * @Assert\NotBlank()
@@ -28,7 +28,7 @@ class JobCategory implements EntityInterface, JsonSerializable
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      * @JMS\Type("string")
      * @JMS\SerializedName("name")
      * @Assert\Length(
