@@ -51,29 +51,25 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Use scrutinizer CI
 * Test coverage 100%
 * write a small documentation where you explain what you have changed and why you think your refactored code is better than the original code.
-* PlantUML diagram with data flow
 * Remove apache configuration files
 * Remove all TODOs
 * Create an errorMessageHandler
 * Use custom exceptions
-* Validate DTOs
 * Move services configuration inside bundle
 * Swagger API documentation
-* Review all tests. Tests with AAA
-* Functional controller tests
 * [Critical] Wrap exceptions. Uncaught PHP Exception (NotFoundHttpException)
 * Strict types declaration in every php file
 * Fix phpdocs everywhere
 * Declare return and argument types everywhere
-* Check if post action works on initial project before changes
+* [Internal] Check if post action works on initial project before changes
 * [Internal] Check all API routes in api.http (after tests)
-* Get rid of static methods
 * Property names in entities formatted to camelCase, to follow PSR-1 (consistency with properties in other classes).
 * Run migrations on test database
-* Zipcode id was string, but behave like integer. Property and column type were changed to integer
 * Export mysql configuration outside docker image
 
 ### In progress
+* Review all tests. Tests with AAA
+* Zipcode id was string, but behave like integer. Property and column type were changed to integer
 
 ### Done
 * [Critical] Remove symfony cache directories from git
@@ -105,7 +101,8 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Generate job entity uuid on backend instead of client or database. Custom IdGenerator generator created, because Doctrine generator uses database SELECT to create UUID. It is better for testing and performance to have generator on the application side.
 * SQL should be present only in repositories. Job service refactored to create SQL with query builder.
 * [Critical] @ORM\JoinColumn annotation in Job entity related to zipcode points to wrong field (category_id).
-
+* Validate DTOs
+* Get rid of static methods
 
 ### Could be done in future
 * Implementation of all CRUD methods for Job, JobCategory and Zipcode.
@@ -115,3 +112,4 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Logging should be applied.
 * SQLite could be used for functional tests instead of MySQL.
 * PHP version locked in composer.json could be raised.
+* "Entity services" layer had transparent logic, so I moved logic to controllers. Because I dont like to see HTTP and validation logic outside controllers, and services before refactoring does not perform other actions. If there would be some buisiness logic requirements in future, I would create Factories to create entities. So for now I chose simplicity over preoptimization.

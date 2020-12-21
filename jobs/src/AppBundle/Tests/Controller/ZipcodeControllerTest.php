@@ -105,4 +105,13 @@ class ZipcodeControllerTest extends AbstractControllerTest
 
         $this->assertEquals(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
     }
+
+    // TODO[petr]: test validation scenarios
+    public function provideInvalidZipcodes(): array
+    {
+        return [
+            'city: The city must have at least 5 characters' => [],
+            'id: This value should have exactly 5 characters.' => [],
+        ];
+    }
 }
