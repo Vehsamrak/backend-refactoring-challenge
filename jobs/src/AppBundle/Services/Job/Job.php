@@ -6,16 +6,19 @@ namespace AppBundle\Services\Job;
 
 use AppBundle\Entity\EntityInterface;
 use AppBundle\Repository\JobRepository;
-use AppBundle\Services\AbstractService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use AppBundle\Entity\Job as JobEntity;
 
-class Job extends AbstractService
+class Job
 {
-    public function __construct(JobRepository $repository, EntityManagerInterface $entityManager)
+    private $jobRepository;
+
+    private $entityManager;
+
+    public function __construct(JobRepository $jobRepository, EntityManagerInterface $entityManager)
     {
-        $this->repository = $repository;
+        $this->jobRepository = $jobRepository;
         $this->entityManager = $entityManager;
     }
 
@@ -30,8 +33,7 @@ class Job extends AbstractService
      */
     public function update(EntityInterface $entity): JobEntity
     {
-        /** @var JobEntity $persistedEntity */
-        $persistedEntity = $this->find($entity->getId());
+        $persistedEntity = $this->jobRepository->findById($entity->getId());
         if (is_null($persistedEntity)) {
             throw new NotFoundHttpException(
                 sprintf(

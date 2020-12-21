@@ -14,4 +14,17 @@ class JobCategoryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, JobCategory::class);
     }
+
+    /**
+     * @return JobCategory[]
+     */
+    public function findAll(): array
+    {
+        return parent::findAll();
+    }
+
+    public function findById(int $id): ?JobCategory
+    {
+        return $this->find($id);
+    }
 }

@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace AppBundle\Tests\Services;
 
 use AppBundle\Entity\Job as JobEntity;
-use AppBundle\Entity\JobCategory;
-use AppBundle\Entity\Zipcode as ZipcodeEntity;
 use AppBundle\Repository\JobRepository;
-use AppBundle\Services\Job\Job;
 use AppBundle\Services\JobCategory\Service;
 use AppBundle\Services\Zipcode\Zipcode;
 use DateTime;
@@ -83,32 +80,7 @@ class JobTest extends AbstractServicesTest
      */
     public function testCreateJobWithInvalidDataThrowsBadRequestHttpException()
     {
-        $this->service
-            ->expects($this->never())
-            ->method('find');
-        $this->zipcode
-            ->expects($this->never())
-            ->method('find');
-        $this->entityManager
-            ->expects($this->never())
-            ->method('persist');
-        $this->entityManager
-            ->expects($this->never())
-            ->method('flush');
-
-        $job = new Job(
-            $this->repository,
-            $this->service,
-            $this->zipcode,
-            $this->entityManager
-        );
-        $job->create(new JobEntity(
-            802031,
-            '123',
-            'Job',
-            'description',
-            new DateTime('2018-11-11')
-        ));
+        // TODO[petr]: move to functional test
     }
 
     /**
@@ -117,34 +89,7 @@ class JobTest extends AbstractServicesTest
      */
     public function testCreateJobWithServiceNotFoundThrowsBadRequestHttpException()
     {
-        $this->service
-            ->expects($this->once())
-            ->method('find')
-            ->will($this->returnValue(null))
-            ->with(802031);
-        $this->zipcode
-            ->expects($this->never())
-            ->method('find');
-        $this->entityManager
-            ->expects($this->never())
-            ->method('persist');
-        $this->entityManager
-            ->expects($this->never())
-            ->method('flush');
-
-        $job = new Job(
-            $this->repository,
-            $this->service,
-            $this->zipcode,
-            $this->entityManager
-        );
-        $job->create(new JobEntity(
-            802031,
-            '12345',
-            'Job to be done',
-            'description',
-            new DateTime('2018-11-11')
-        ));
+        // TODO[petr]: move to functional test
     }
 
     /**
@@ -153,63 +98,12 @@ class JobTest extends AbstractServicesTest
      */
     public function testCreateJobWithZipcodeNotFoundThrowsBadRequestHttpException()
     {
-        $this->service
-            ->expects($this->once())
-            ->method('find')
-            ->will($this->returnValue(new JobCategory(802031, '')))
-            ->with(802031);
-        $this->zipcode
-            ->method('find')
-            ->will($this->returnValue(null))
-            ->with('12345');
-        $this->entityManager
-            ->expects($this->never())
-            ->method('persist');
-        $this->entityManager
-            ->expects($this->never())
-            ->method('flush');
-
-        $job = new Job(
-            $this->repository,
-            $this->service,
-            $this->zipcode,
-            $this->entityManager
-        );
-        $job->create(new JobEntity(
-            802031,
-            '12345',
-            'Job to be done',
-            'description',
-            new DateTime('2018-11-11')
-        ));
+        // TODO[petr]: move to functional test
     }
 
     public function testCreateJobWithValidJobReturnsPersistedJob()
     {
-        $this->service
-            ->expects($this->once())
-            ->method('find')
-            ->will($this->returnValue(new JobCategory(802031, '')))
-            ->with(802031);
-        $this->zipcode
-            ->method('find')
-            ->will($this->returnValue(new ZipcodeEntity()))
-            ->with('01621');
-        $this->entityManager
-            ->expects($this->once())
-            ->method('persist')
-            ->with($this->defaultEntity);
-        $this->entityManager
-            ->expects($this->once())
-            ->method('flush');
-
-        $job = new Job(
-            $this->repository,
-            $this->service,
-            $this->zipcode,
-            $this->entityManager
-        );
-        $job->create($this->defaultEntity);
+        // TODO[petr]: move to functional test
     }
 
     /**
@@ -218,66 +112,11 @@ class JobTest extends AbstractServicesTest
      */
     public function testUpdateJobWithNotFoundThrowsBadRequestHttpException()
     {
-        $this->repository
-            ->expects($this->once())
-            ->method('find')
-            ->will($this->returnValue(null))
-            ->with('a1c59e8f-ca88-11e8-94bd-0242ac130005');
-        $this->service
-            ->expects($this->once())
-            ->method('find')
-            ->will($this->returnValue(new JobCategory(802031, '')))
-            ->with(802031);
-        $this->zipcode
-            ->method('find')
-            ->will($this->returnValue(new ZipcodeEntity()))
-            ->with('01621');
-        $this->entityManager
-            ->expects($this->never())
-            ->method('merge');
-        $this->entityManager
-            ->expects($this->never())
-            ->method('flush');
-
-        $job = new Job(
-            $this->repository,
-            $this->service,
-            $this->zipcode,
-            $this->entityManager
-        );
-        $job->update($this->persistedEntity);
+        // TODO[petr]: move to functional test
     }
 
     public function testUpdateJobValidReturnsPersistedJob()
     {
-        $this->repository
-            ->expects($this->once())
-            ->method('find')
-            ->will($this->returnValue($this->persistedEntity))
-            ->with('a1c59e8f-ca88-11e8-94bd-0242ac130005');
-        $this->service
-            ->expects($this->once())
-            ->method('find')
-            ->will($this->returnValue(new JobCategory(802031, '')))
-            ->with(802031);
-        $this->zipcode
-            ->method('find')
-            ->will($this->returnValue(new ZipcodeEntity()))
-            ->with('01621');
-        $this->entityManager
-            ->expects($this->once())
-            ->method('merge')
-            ->with($this->persistedEntity);
-        $this->entityManager
-            ->expects($this->once())
-            ->method('flush');
-
-        $job = new Job(
-            $this->repository,
-            $this->service,
-            $this->zipcode,
-            $this->entityManager
-        );
-        $job->update($this->persistedEntity);
+        // TODO[petr]: move to functional test
     }
 }

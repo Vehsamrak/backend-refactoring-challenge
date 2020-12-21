@@ -14,4 +14,9 @@ class ZipcodeRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Zipcode::class);
     }
+
+    public function findById(string $id): ?Zipcode
+    {
+        return $this->find($id);
+    }
 }

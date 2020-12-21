@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\JobCategory;
-use AppBundle\Services\JobCategory\Service;
+use AppBundle\Repository\JobCategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,16 +17,16 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class JobCategoryController extends AbstractController
 {
-    private $jobCategoryService;
+    private $jobCategoryRepository;
 
     public function __construct(
-        Service $jobCategoryService,
         EntityManagerInterface $entityManager,
+        JobCategoryRepository $jobCategoryRepository,
         SerializerInterface $serializer,
         ValidatorInterface $validator
     ) {
         parent::__construct($entityManager, $serializer, $validator);
-        $this->jobCategoryService = $jobCategoryService;
+        $this->jobCategoryRepository = $jobCategoryRepository;
     }
 
     /**
@@ -35,9 +35,7 @@ class JobCategoryController extends AbstractController
      */
     public function getAllAction(): Response
     {
-        $all = $this->jobCategoryService->findAll();
-
-        return new JsonResponse($all, Response::HTTP_OK);
+        return new JsonResponse($this->jobCategoryRepository->findAll(), Response::HTTP_OK);
     }
 
     /**
@@ -46,18 +44,18 @@ class JobCategoryController extends AbstractController
      * @return Response
      * @throws NotFoundHttpException
      */
-    public function getAction($id): Response
+    public function getAction(int $id): Response
     {
-        // TODO[petr]: rename entity
-        $entity = $this->jobCategoryService->find($id);
+        // TODO[petr]: use paramconverter
+        $category = $this->jobCategoryRepository->findById($id);
 
-        if (!$entity) {
+        if (!$category) {
             throw new NotFoundHttpException(
                 sprintf('The resource \'%s\' was not found.', $id)
             );
         }
 
-        return new JsonResponse($entity, Response::HTTP_OK);
+        return new JsonResponse($category, Response::HTTP_OK);
     }
 
     /**
