@@ -7,7 +7,9 @@ namespace AppBundle\Controller;
 use AppBundle\Dto\ValidationErrorResponse;
 use AppBundle\Entity\EntityInterface;
 use AppBundle\Exception\ClassNotFoundException;
-use AppBundle\Exception\NotEntityException;
+use AppBundle\Exception\InterfaceException;
+use AppBundle\Repository\SearchParametersInterface;
+use AppBundle\Repository\SearchRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\Exception\RuntimeException as JMSRuntimeException;
 use JMS\Serializer\SerializerInterface;
@@ -45,6 +47,43 @@ abstract class AbstractController
     }
 
     /**
+     * @param array  $searchParametersData
+     * @param string $searchParametersClassname
+     * @return JsonResponse
+     * @throws ClassNotFoundException
+     */
+    protected function validateAndSearch(array $searchParametersData, string $searchParametersClassname): JsonResponse
+    {
+        $this->checkSearchParameters($searchParametersClassname);
+
+        try {
+            /** @var SearchParametersInterface $searchParameters */
+            $searchParameters = $this->serializer->deserialize(
+                json_encode($searchParametersData),
+                $searchParametersClassname,
+                'json'
+            );
+        } catch (JMSRuntimeException $JMSException) {
+            return new JsonResponse('JSON is malformed', Response::HTTP_BAD_REQUEST);
+        }
+
+        $validationErrors = $this->validator->validate($searchParameters);
+
+        if (count($validationErrors) > 0) {
+            return new ValidationErrorResponse($validationErrors);
+        }
+
+        $repository = $this->entityManager->getRepository($searchParameters->getEntityClassName());
+        if (!$repository instanceof SearchRepositoryInterface) {
+            throw new \InvalidArgumentException(
+                sprintf('Repository must implement with %s', SearchRepositoryInterface::class)
+            );
+        }
+
+        return new JsonResponse($repository->findAllByParameters($searchParameters), Response::HTTP_OK);
+    }
+
+    /**
      * @param string $entityDataJson
      * @param string $entityClassName
      * @return JsonResponse
@@ -66,14 +105,7 @@ abstract class AbstractController
         string $entityClassName,
         bool $isEntityNew
     ): JsonResponse {
-        if (!class_exists($entityClassName)) {
-            throw new ClassNotFoundException($entityClassName);
-        }
-
-        if (!$this->isEntity($entityClassName)) {
-            throw new NotEntityException($entityClassName);
-        }
-        
+        $this->checkEntityClass($entityClassName);
 
         try {
             $entity = $this->serializer->deserialize($entityDataJson, $entityClassName, 'json');
@@ -94,19 +126,30 @@ abstract class AbstractController
             $returnCode = Response::HTTP_OK;
         }
 
-        try {
-            $this->entityManager->flush();
-        } catch (\Throwable $exception) {
-            // TODO[petr]: remove dump
-            var_dump($exception->getMessage());
-            die;
-        }
-        
+        $this->entityManager->flush();
+
         return new JsonResponse($entity, $returnCode);
     }
 
-    private function isEntity(string $entityClassName): bool
+    private function checkEntityClass(string $entityClassName): void
     {
-        return in_array(EntityInterface::class, class_implements($entityClassName), true);
+        if (!class_exists($entityClassName)) {
+            throw new ClassNotFoundException($entityClassName);
+        }
+
+        if (!in_array(EntityInterface::class, class_implements($entityClassName), true)) {
+            throw new InterfaceException($entityClassName, EntityInterface::class);
+        }
+    }
+
+    private function checkSearchParameters(string $className): void
+    {
+        if (!class_exists($className)) {
+            throw new ClassNotFoundException($className);
+        }
+
+        if (!in_array(SearchParametersInterface::class, class_implements($className), true)) {
+            throw new InterfaceException($className, SearchParametersInterface::class);
+        }
     }
 }

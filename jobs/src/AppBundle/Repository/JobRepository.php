@@ -6,12 +6,10 @@ namespace AppBundle\Repository;
 
 use AppBundle\Dto;
 use AppBundle\Entity\Job;
-use DateTime;
-use Exception;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class JobRepository extends ServiceEntityRepository
+class JobRepository extends ServiceEntityRepository implements SearchRepositoryInterface
 {
     public function __construct(RegistryInterface $registry)
     {
@@ -24,26 +22,44 @@ class JobRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Dto\SearchJobRequest $searchJobRequest
+     * @param SearchParametersInterface $jobSearchParameters
      * @return Job[]
-     * @throws Exception
+     * @throws \Exception
      */
-    public function findAllByParameters(Dto\SearchJobRequest $searchJobRequest): array
+    public function findAllByParameters(SearchParametersInterface $jobSearchParameters): array
     {
+        if (!$jobSearchParameters instanceof Dto\SearchJobRequest) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Search parameters "%s" must be instance of "%s"',
+                    get_class($jobSearchParameters),
+                    Dto\SearchJobRequest::class
+                )
+            );
+        }
+
+        $createdFrom = new \DateTime(sprintf('-%d day', $jobSearchParameters->getDaysCount()));
+
         $queryBuilder = $this->createQueryBuilder('job');
         $queryBuilder
             ->where('job.createdAt >= :createdFrom')
-            ->andWhere('job.category = :categoryId')
-            ->andWhere('job.zipcode = :zipcodeId')
-            ->setMaxResults($searchJobRequest->getLimit())
-            ->setFirstResult($searchJobRequest->getOffset())
-            ->setParameters(
-                [
-                    'createdFrom' => new DateTime(sprintf('-%d day', $searchJobRequest->getDaysCount())),
-                    'categoryId' => $searchJobRequest->getCategoryId(),
-                    'zipcodeId' => $searchJobRequest->getZipcodeId(),
-                ]
-            );
+            ->setMaxResults($jobSearchParameters->getLimit())
+            ->setFirstResult($jobSearchParameters->getOffset())
+            ->setParameter('createdFrom', $createdFrom);
+
+        $categoryId = $jobSearchParameters->getCategoryId();
+        if (null !== $categoryId) {
+            $queryBuilder
+                ->andWhere('job.category = :categoryId')
+                ->setParameter('categoryId', $categoryId);
+        }
+
+        $zipcodeId = $jobSearchParameters->getZipcodeId();
+        if (null !== $zipcodeId) {
+            $queryBuilder
+                ->andWhere('job.zipcode = :categoryId')
+                ->setParameter('zipcodeId', $zipcodeId);
+        }
 
         return $queryBuilder->getQuery()->getArrayResult();
     }

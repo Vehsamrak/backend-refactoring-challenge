@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace AppBundle\Controller;
 
+use AppBundle\Dto;
 use AppBundle\Entity\Job;
 use AppBundle\Repository\JobRepository;
-use AppBundle\Services\Job\Job as JobService;
-use AppBundle\Services\Job\JobFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,20 +18,16 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class JobController extends AbstractController
 {
-    private $jobService;
-
     // TODO[petr]: use param converter instead
     private $jobRepository;
 
     public function __construct(
-        JobService $jobService,
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         JobRepository $jobRepository
     ) {
         parent::__construct($entityManager, $serializer, $validator);
-        $this->jobService = $jobService;
         $this->jobRepository = $jobRepository;
     }
 
@@ -40,15 +35,14 @@ class JobController extends AbstractController
      * @Rest\Get("/job")
      * @param Request $request
      * @return Response
+     * @throws \Exception
      */
-    public function getAllFilteringAction(Request $request): Response
+    public function searchAction(Request $request): Response
     {
-        // TODO[petr]: refactor method to use query builder
-        return new JsonResponse(
-            $this->jobService->findAll($request->query->all()),
-            Response::HTTP_OK
-        );
+        return $this->validateAndSearch($request->query->all(), Dto\SearchJobRequest::class);
     }
+
+    // TODO[petr]: use paramconverter
 
     /**
      * @Rest\Get("/job/{id}")
@@ -58,15 +52,15 @@ class JobController extends AbstractController
      */
     public function getAction($id): Response
     {
-        $entity = $this->jobService->find($id);
-        if (!$entity) {
+        $job = $this->jobRepository->findById($id);
+        if (null === $job) {
             // TODO[petr]: Use ErrorResponse
             throw new NotFoundHttpException(
                 sprintf('The resource \'%s\' was not found.', $id)
             );
         }
 
-        return new JsonResponse($entity, Response::HTTP_OK);
+        return new JsonResponse($job, Response::HTTP_OK);
     }
 
     /**

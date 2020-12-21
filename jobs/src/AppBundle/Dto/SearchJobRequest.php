@@ -4,24 +4,32 @@ declare(strict_types=1);
 
 namespace AppBundle\Dto;
 
-class SearchJobRequest
+use AppBundle\Entity\Job;
+use AppBundle\Repository\SearchParametersInterface;
+
+// TODO[petr]: Json serialize properties
+class SearchJobRequest implements SearchParametersInterface
 {
-    private $daysCount;
+    private const DEFAULT_DAYS_COUNT = 30;
+    private const DEFAULT_LIMIT = 100;
+    private const DEFAULT_OFFSET = 0;
+
+    private $daysCount = self::DEFAULT_DAYS_COUNT;
 
     private $categoryId;
 
     private $zipcodeId;
 
-    private $limit;
+    private $limit = self::DEFAULT_LIMIT;
 
-    private $offset;
+    private $offset = self::DEFAULT_OFFSET;
 
     public function __construct(
-        int $daysCount,
+        int $daysCount = self::DEFAULT_DAYS_COUNT,
         ?int $categoryId = null,
         ?int $zipcodeId = null,
-        int $limit = 100,
-        int $offset = 0
+        int $limit = self::DEFAULT_LIMIT,
+        int $offset = self::DEFAULT_OFFSET
     ) {
         $this->daysCount = $daysCount;
         $this->categoryId = $categoryId;
@@ -53,5 +61,10 @@ class SearchJobRequest
     public function getOffset(): int
     {
         return $this->offset;
+    }
+
+    public function getEntityClassName(): string
+    {
+        return Job::class;
     }
 }
