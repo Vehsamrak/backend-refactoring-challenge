@@ -51,7 +51,6 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Use scrutinizer CI
 * Test coverage 100%
 * write a small documentation where you explain what you have changed and why you think your refactored code is better than the original code.
-* Remove apache configuration files
 * Remove all TODOs
 * Create an errorMessageHandler
 * Use custom exceptions
@@ -103,6 +102,7 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * [Critical] @ORM\JoinColumn annotation in Job entity related to zipcode points to wrong field (category_id).
 * Validate DTOs
 * Get rid of static methods
+* Remove apache configuration files
 
 ### Could be done in future
 * Implementation of all CRUD methods for Job, JobCategory and Zipcode.
