@@ -19,9 +19,9 @@ class ValidationErrorResponse extends JsonResponse
     public function formatErrors(ConstraintViolationListInterface $errors): array
     {
         $errorMessages = [];
-        /** @var ConstraintViolationList $validationErrors */
+        /** @var ConstraintViolationList $errors */
         foreach ($errors as $validationError) {
-            $errorMessages[] = $validationError->getMessage();
+            $errorMessages[$validationError->getPropertyPath()] = $validationError->getMessage();
         }
 
         return $errorMessages;
