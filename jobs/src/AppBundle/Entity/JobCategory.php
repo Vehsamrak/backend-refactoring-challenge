@@ -13,7 +13,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\JobCategoryRepository")
  * @ORM\Table(name="job_category")
- * @UniqueEntity("id", message="Provided ID already exists")
+ * @UniqueEntity(fields="id", message="Resource with provided ID already exists")
  */
 class JobCategory implements EntityInterface, JsonSerializable
 {

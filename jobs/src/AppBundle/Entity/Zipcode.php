@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ZipcodeRepository")
- * @UniqueEntity("id", message="Provided ID already exists")
+ * @UniqueEntity("id", message="Resource with provided ID already exists")
  */
 class Zipcode implements EntityInterface, JsonSerializable
 {

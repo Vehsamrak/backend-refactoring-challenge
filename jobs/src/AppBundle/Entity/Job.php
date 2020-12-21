@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\PrePersist;
 use JsonSerializable;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as JMS;
 use Datetime;
@@ -23,6 +24,7 @@ use Datetime;
  *     }
  * )
  * @HasLifecycleCallbacks
+ * @UniqueEntity(fields="id", message="Resource with provided ID already exists")
  */
 class Job implements EntityInterface, JsonSerializable
 {
