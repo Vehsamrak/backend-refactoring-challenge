@@ -103,6 +103,7 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Get rid of static methods
 * Remove apache configuration files
 * Strict types declaration in every php file
+* Deprecated XDebug parameters changed to new values in PHP Dockerfile
 
 ### Could be done in future
 * Implementation of all CRUD methods for Job, JobCategory and Zipcode.
