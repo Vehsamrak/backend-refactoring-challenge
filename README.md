@@ -57,7 +57,6 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Move services configuration inside bundle
 * Swagger API documentation
 * [Critical] Wrap exceptions. Uncaught PHP Exception (NotFoundHttpException)
-* Strict types declaration in every php file
 * Fix phpdocs everywhere
 * Declare return and argument types everywhere
 * [Internal] Check if post action works on initial project before changes
@@ -103,6 +102,7 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Validate DTOs
 * Get rid of static methods
 * Remove apache configuration files
+* Strict types declaration in every php file
 
 ### Could be done in future
 * Implementation of all CRUD methods for Job, JobCategory and Zipcode.
