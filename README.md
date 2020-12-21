@@ -72,7 +72,6 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Run migrations on test database
 * Zipcode id was string, but behave like integer. Property and column type were changed to integer
 * Export mysql configuration outside docker image
-* Add logging
 
 ### In progress
 
@@ -105,4 +104,14 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Job entity has annotation @ORM\GeneratedValue with UUID strategy, and therefore should not have id in constructor
 * Generate job entity uuid on backend instead of client or database. Custom IdGenerator generator created, because Doctrine generator uses database SELECT to create UUID. It is better for testing and performance to have generator on the application side.
 * SQL should be present only in repositories. Job service refactored to create SQL with query builder.
-* [Critical] @ORM\JoinColumn annotation in Job entity related to zipcode points to wrong field (category_id).  
+* [Critical] @ORM\JoinColumn annotation in Job entity related to zipcode points to wrong field (category_id).
+
+
+### Could be done in future
+* Implementation of all CRUD methods for Job, JobCategory and Zipcode.
+* Zipcodes are standartized and static, so no need to store them in database. Could be extracted to configuration.
+* Authentification and authorization for controller actions must be done.
+* Symfony can be updated to latest version. Current project 3.4 is not maintained anymore.
+* Logging should be applied.
+* SQLite could be used for functional tests instead of MySQL.
+* PHP version locked in composer.json could be raised.

@@ -63,6 +63,14 @@ class JobControllerTest extends AbstractControllerTest
     /**
      * @test
      */
+    public function postJob_GivenAlreadyExistingJob_BadRequestReturned(): void
+    {
+        // TODO[petr]: implement this
+    }
+
+    /**
+     * @test
+     */
     public function postInvalidJobReturnsBadRequest(): void
     {
         $this->defaultJob['title'] = '';

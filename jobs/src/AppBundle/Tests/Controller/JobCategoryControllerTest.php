@@ -37,7 +37,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function getOneCategoryFound(): void
+    public function getCategoryId_GivenExistingCategoryId_CategoryReturned(): void
     {
         $expected = trim(file_get_contents(self::FIXTURE_PATH_ONE_CATEGORY));
 
@@ -50,7 +50,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function getOneCategoryNotFound(): void
+    public function getCategoryId_GivenUnexistingCategoryId_NotFoundErrorReturned(): void
     {
         $this->client->request('GET', '/category/1');
 
@@ -60,7 +60,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function postCategoryRepeatedReturnsBadRequest(): void
+    public function postCategory_GivenAlreadyExistingCategory_BadRequestReturned(): void
     {
         $this->client->request(
             'POST',
@@ -77,7 +77,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function postInvalidCategoryReturnsBadRequest(): void
+    public function postCategory_GivenInvalidCategory_BadRequestReturned(): void
     {
         $this->client->request(
             'POST',
@@ -94,7 +94,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function postValidCategoryReturnsCreated(): void
+    public function postCategory_GivenValidCategory_CreatedCategoryReturned(): void
     {
         $this->client->request(
             'POST',
