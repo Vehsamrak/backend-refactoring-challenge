@@ -30,7 +30,7 @@ class Job implements EntityInterface, JsonSerializable
 {
     /**
      * @ORM\Id()
-     * @ORM\Column(name="id", type="guid")
+     * @ORM\Column(name="id", type="guid", nullable=false)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="AppBundle\Services\UuidGenerator\UuidGenerator")
      * @JMS\Type("string")
@@ -39,9 +39,8 @@ class Job implements EntityInterface, JsonSerializable
     private $id;
 
     // TODO[petr]: return entity
-    // TODO[petr]: rename property to category
     /**
-     * @ORM\Column(name="category_id", type="integer")
+     * @ORM\Column(name="category_id", type="integer", nullable=false)
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\JobCategory")
      * @ORM\JoinColumn(name="category_id", nullable=false, referencedColumnName="id")
      * @Assert\NotBlank(message="Job category should not be blank")
@@ -52,18 +51,18 @@ class Job implements EntityInterface, JsonSerializable
      * @JMS\Type("integer")
      * @JMS\SerializedName("categoryId")
      */
-    private $category;
+    private $categoryId;
 
     // TODO[petr]: return entity
     /**
-     * @ORM\Column(name="zipcode_id", type="string", length=5, options={"fixed" = true})
+     * @ORM\Column(name="zipcode_id", type="string", length=5, options={"fixed" = true}, nullable=false)
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Zipcode")
      * @ORM\JoinColumn(name="zipcode_id", referencedColumnName="id", nullable=false)
      * @Assert\Length(
      *      min = 5,
      *      max = 5,
-     *      minMessage = "The zipcode_id must have exactly 5 characters",
-     *      maxMessage = "The zipcode_id must have exactly 5 characters"
+     *      minMessage = "The zipcodeId must have exactly 5 characters",
+     *      maxMessage = "The zipcodeId must have exactly 5 characters"
      * )
      * @Assert\NotBlank(message="Zipcode should not be blank")
      * @AppBundle\Services\Validator\EntityExistsConstraint(
@@ -73,14 +72,14 @@ class Job implements EntityInterface, JsonSerializable
      * @JMS\Type("integer")
      * @JMS\SerializedName("zipcodeId")
      */
-    private $zipcode;
+    private $zipcodeId;
 
     /**
-     * @ORM\Column(name="title", type="string", length=50)
+     * @ORM\Column(name="title", type="string", length=50, nullable=false)
      * @Assert\Length(
      *      min = 5,
      *      max = 50,
-     *      minMessage = "The title must more than 4 characters",
+     *      minMessage = "The title must have more than 4 characters",
      *      maxMessage = "The title must have less than 51 characters"
      * )
      * @Assert\NotBlank(message="Title should not be blank")
@@ -111,14 +110,14 @@ class Job implements EntityInterface, JsonSerializable
 
     // TODO[petr]: refactor nullables
     public function __construct(
-        ?int $categoryId = null,
-        ?string $zipcodeId = null,
+        int $categoryId,
+        string $zipcodeId,
         string $title,
         ?string $description = null,
         ?DateTimeInterface $dateToBeDone = null
     ) {
-        $this->category = $categoryId;
-        $this->zipcode = $zipcodeId;
+        $this->categoryId = $categoryId;
+        $this->zipcodeId = $zipcodeId;
         $this->title = $title;
         $this->description = $description;
         $this->dateToBeDone = $dateToBeDone;
@@ -130,14 +129,14 @@ class Job implements EntityInterface, JsonSerializable
         return $this->id;
     }
 
-    public function getCategory(): ?int
+    public function getCategory(): int
     {
-        return $this->category;
+        return $this->categoryId;
     }
 
-    public function getZipcode(): ?string
+    public function getZipcodeId(): string
     {
-        return $this->zipcode;
+        return $this->zipcodeId;
     }
 
     public function getTitle(): ?string
@@ -177,8 +176,8 @@ class Job implements EntityInterface, JsonSerializable
     {
         return [
             'id' => $this->id,
-            'categoryId' => $this->category,
-            'zipcodeId' => $this->zipcode,
+            'categoryId' => $this->categoryId,
+            'zipcodeId' => $this->zipcodeId,
             'title' => $this->title,
             'description' => $this->description,
             'dateToBeDone' => $this->dateToBeDone,
