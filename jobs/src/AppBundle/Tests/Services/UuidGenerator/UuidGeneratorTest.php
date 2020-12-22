@@ -8,6 +8,9 @@ use AppBundle\Services\UuidGenerator\UuidGenerator;
 use Doctrine\ORM\EntityManager;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group unit
+ */
 class UuidGeneratorTest extends TestCase
 {
     private const UUID_REGEXP = '/^[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}$/i';

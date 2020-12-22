@@ -10,6 +10,9 @@ use AppBundle\Services\EntityFactory\EntityAwareInterface;
 use AppBundle\Services\EntityFactory\EntityFactoryInterface;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group unit
+ */
 class AbstractEntityFactoryTest extends TestCase
 {
     /**

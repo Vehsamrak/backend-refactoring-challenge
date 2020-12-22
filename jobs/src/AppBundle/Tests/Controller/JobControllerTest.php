@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class JobControllerTest extends AbstractControllerTest
 {
+    private const URL = '/job';
+
     public function setUp(): void
     {
         parent::setUp();
@@ -34,10 +36,9 @@ class JobControllerTest extends AbstractControllerTest
         ?string $zipcodeId,
         int $jobsCount
     ): void {
-        $this->client->request('GET', '/job', $parameters);
+        $this->requestGet(self::URL, $parameters);
 
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertResponseCode(Response::HTTP_OK);
         $this->assertJobsCount($jobsCount);
         $this->assertJobCategory($categoryId);
         $this->assertZipcode($zipcodeId);
@@ -48,12 +49,12 @@ class JobControllerTest extends AbstractControllerTest
      */
     public function getJobId_GivenExistingJobId_ReturnsJob(): void
     {
-        $jobId = $this->fetchExistingJobId();
+        $jobId = $this->fetchOneExistingJobId();
+        $url = sprintf('%s/%s', self::URL, $jobId);
 
-        $this->client->request('GET', sprintf('/job/%s', $jobId));
+        $this->requestGet($url);
 
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertResponseCode(Response::HTTP_OK);
     }
 
     /**
@@ -61,10 +62,11 @@ class JobControllerTest extends AbstractControllerTest
      */
     public function getJobId_GivenUnexistingJobId_ReturnsNotFoundError(): void
     {
-        $this->client->request('GET', sprintf('/job/%s', JobFixtures::UNEXISTING_JOB_ID));
+        $url = sprintf('%s/%s', self::URL, JobFixtures::UNEXISTING_JOB_ID);
 
-        $this->assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
+        $this->requestGet($url);
+
+        $this->assertResponseCode(Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -75,18 +77,9 @@ class JobControllerTest extends AbstractControllerTest
      */
     public function postJob_GivenInvalidJob_ReturnsBadRequestError(array $invalidJobData, array $expectedErrors): void
     {
-        // TODO[petr]: move requestPost, requestGet, requestPut methods in abstract controller
-        $this->client->request(
-            'POST',
-            '/job',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode($invalidJobData)
-        );
+        $this->requestPost(self::URL, $invalidJobData);
 
-        $this->assertSame(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertResponseCode(Response::HTTP_BAD_REQUEST);
         $this->assertErrors($expectedErrors);
     }
 
@@ -97,17 +90,9 @@ class JobControllerTest extends AbstractControllerTest
     {
         $existingJobsCount = $this->countExistingJobs();
 
-        $this->client->request(
-            'POST',
-            '/job',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode($this->createValidJobData())
-        );
+        $this->requestPost(self::URL, $this->createValidJobData());
 
-        $this->assertSame(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertResponseCode(Response::HTTP_CREATED);
         $this->assertSame($existingJobsCount + 1, $this->countExistingJobs());
     }
 
@@ -116,17 +101,11 @@ class JobControllerTest extends AbstractControllerTest
      */
     public function putJob_GivenUnexistingJob_ReturnsNotFoundError(): void
     {
-        $this->client->request(
-            'PUT',
-            sprintf('/job/%s', JobFixtures::UNEXISTING_JOB_ID),
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode($this->createValidJobData())
-        );
+        $url = sprintf('%s/%s', self::URL, JobFixtures::UNEXISTING_JOB_ID);
 
-        $this->assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
+        $this->requestPut($url, $this->createValidJobData());
+
+        $this->assertResponseCode(Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -134,22 +113,15 @@ class JobControllerTest extends AbstractControllerTest
      */
     public function putJob_GivenExistingJob_ExistingJobUpdated(): void
     {
-        $job = $this->fetchExistingJob();
+        $job = $this->fetchOneExistingJob();
         $jobId = $job['id'];
+        $url = sprintf('%s/%s', self::URL, $jobId);
         $updatedJobData = ['title' => 'updated'] + $job;
 
-        $this->client->request(
-            'PUT',
-            sprintf('/job/%s', $jobId),
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode($updatedJobData)
-        );
+        $this->requestPut($url, $updatedJobData);
 
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
-        $this->assertArraySubset($updatedJobData, $this->fetchExistingJob($jobId));
+        $this->assertResponseCode(Response::HTTP_OK);
+        $this->assertArraySubset($updatedJobData, $this->fetchOneExistingJob($jobId));
     }
 
     public function provideInvalidJobRequests(): array
@@ -224,35 +196,35 @@ class JobControllerTest extends AbstractControllerTest
         ];
     }
 
-    private function fetchExistingJob(?string $id = null): array
+    private function fetchOneExistingJob(?string $id = null): array
     {
         if (null === $id) {
-            $this->client->request('GET', '/job');
+            $this->requestGet(self::URL);
         } else {
-            $this->client->request('GET', '/job/'.$id);
+            $this->requestGet(sprintf('%s/%s', self::URL, $id));
         }
 
-        $jobs = json_decode($this->client->getResponse()->getContent(), true);
+        $jobs = json_decode($this->getResponseContents(), true);
 
         return $jobs[0] ?? $jobs;
     }
 
+    private function fetchOneExistingJobId(): string
+    {
+        return $this->fetchOneExistingJob()['id'];
+    }
+
     private function countExistingJobs(): int
     {
-        $this->client->request('GET', '/job');
-        $jobs = json_decode($this->client->getResponse()->getContent(), true);
+        $this->requestGet(self::URL);
+        $jobs = json_decode($this->getResponseContents(), true);
 
         return count($jobs);
     }
 
-    private function fetchExistingJobId(): string
-    {
-        return $this->fetchExistingJob()['id'];
-    }
-
     private function assertJobsCount(int $jobsCount): void
     {
-        $responseContent = $this->client->getResponse()->getContent();
+        $responseContent = $this->getResponseContents();
         $responseData = json_decode($responseContent, true);
 
         $this->assertCount($jobsCount, $responseData);
@@ -264,7 +236,7 @@ class JobControllerTest extends AbstractControllerTest
             return;
         }
 
-        $responseContent = $this->client->getResponse()->getContent();
+        $responseContent = $this->getResponseContents();
         $responseData = json_decode($responseContent, true);
 
         foreach ($responseData as $job) {
@@ -278,7 +250,7 @@ class JobControllerTest extends AbstractControllerTest
             return;
         }
 
-        $responseContent = $this->client->getResponse()->getContent();
+        $responseContent = $this->getResponseContents();
         $responseData = json_decode($responseContent, true);
 
         foreach ($responseData as $job) {

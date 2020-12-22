@@ -30,11 +30,10 @@ class JobCategoryControllerTest extends AbstractControllerTest
     {
         $expected = trim(file_get_contents(self::FIXTURE_PATH_ALL_CATEGORIES));
 
-        $this->client->request('GET', self::URL);
+        $this->requestGet(self::URL);
 
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
-        $this->assertSame($expected, $this->client->getResponse()->getContent());
+        $this->assertResponseCode(Response::HTTP_OK);
+        $this->assertSame($expected, $this->getResponseContents());
     }
 
     /**
@@ -43,12 +42,12 @@ class JobCategoryControllerTest extends AbstractControllerTest
     public function getCategoryId_GivenExistingCategoryId_CategoryReturned(): void
     {
         $expected = trim(file_get_contents(self::FIXTURE_PATH_ONE_CATEGORY));
+        $url = sprintf('%s/%d', self::URL, JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1);
 
-        $this->client->request('GET', sprintf('%s/%d', self::URL, JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1));
+        $this->requestGet($url);
 
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
-        $this->assertSame($expected, $this->client->getResponse()->getContent());
+        $this->assertResponseCode(Response::HTTP_OK);
+        $this->assertSame($expected, $this->getResponseContents());
     }
 
     /**
@@ -56,10 +55,11 @@ class JobCategoryControllerTest extends AbstractControllerTest
      */
     public function getCategoryId_GivenUnexistingCategoryId_NotFoundErrorReturned(): void
     {
-        $this->client->request('GET', sprintf('%s/%d', self::URL, JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID));
+        $url = sprintf('%s/%d', self::URL, JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID);
 
-        $this->assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
+        $this->requestGet($url);
+
+        $this->assertResponseCode(Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -72,17 +72,9 @@ class JobCategoryControllerTest extends AbstractControllerTest
         array $jobCategory,
         array $expectedErrors
     ): void {
-        $this->client->request(
-            'POST',
-            self::URL,
-            [],
-            [],
-            ['CONTENT-TYPE' => 'application/json'],
-            json_encode($jobCategory)
-        );
+        $this->requestPost(self::URL, $jobCategory);
 
-        $this->assertSame(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertResponseCode(Response::HTTP_BAD_REQUEST);
         $this->assertErrors($expectedErrors);
     }
 
@@ -94,17 +86,9 @@ class JobCategoryControllerTest extends AbstractControllerTest
         $existingCategoriesCount = $this->countExistingCategories();
         $jobCategory = $this->createValidJobCategoryData();
 
-        $this->client->request(
-            'POST',
-            self::URL,
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode($jobCategory)
-        );
+        $this->requestPost(self::URL, $jobCategory);
 
-        $this->assertSame(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertResponseCode(Response::HTTP_CREATED);
         $this->assertSame($existingCategoriesCount + 1, $this->countExistingCategories());
     }
 
@@ -132,8 +116,8 @@ class JobCategoryControllerTest extends AbstractControllerTest
 
     private function countExistingCategories(): int
     {
-        $this->client->request('GET', self::URL);
-        $jobs = json_decode($this->client->getResponse()->getContent(), true);
+        $this->requestGet(self::URL);
+        $jobs = json_decode($this->getResponseContents(), true);
 
         return count($jobs);
     }

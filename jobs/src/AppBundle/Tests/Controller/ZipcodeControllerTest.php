@@ -24,15 +24,14 @@ class ZipcodeControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function getZipcode_GivenNoParameters_MustReturnAllZipcodes(): void
+    public function getZipcode_GivenNoParameters_ReturnsAllZipcodes(): void
     {
         $expectedZipcodes = file_get_contents(self::FIXTURE_PATH);
 
-        $this->client->request('GET', self::URL);
+        $this->requestGet(self::URL);
 
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
-        $this->assertSame($expectedZipcodes, $this->client->getResponse()->getContent());
+        $this->assertResponseCode(Response::HTTP_OK);
+        $this->assertSame($expectedZipcodes, $this->getResponseContents());
     }
 
     /**
@@ -46,11 +45,10 @@ class ZipcodeControllerTest extends AbstractControllerTest
         ];
         $url = sprintf('%s/%s', self::URL, ZipcodeFixtures::EXISTING_ZIPCODE_ID_1);
 
-        $this->client->request('GET', $url);
+        $this->requestGet($url);
 
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
-        $this->assertSame(json_encode($expectedZipcode), $this->client->getResponse()->getContent());
+        $this->assertResponseCode(Response::HTTP_OK);
+        $this->assertSame(json_encode($expectedZipcode), $this->getResponseContents());
     }
 
     /**
@@ -60,10 +58,9 @@ class ZipcodeControllerTest extends AbstractControllerTest
     {
         $url = sprintf('%s/%s', self::URL, ZipcodeFixtures::UNEXISTING_ZIPCODE_ID);
 
-        $this->client->request('GET', $url);
+        $this->requestGet($url);
 
-        $this->assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertResponseCode(Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -74,17 +71,9 @@ class ZipcodeControllerTest extends AbstractControllerTest
      */
     public function postZipcode_GivenInvalidZipcode_ReturnsBadRequest(array $zipcode, array $expectedErrors): void
     {
-        $this->client->request(
-            'POST',
-            self::URL,
-            [],
-            [],
-            ['CONTENT-TYPE' => 'application/json'],
-            json_encode($zipcode)
-        );
+        $this->requestPost(self::URL, $zipcode);
 
-        $this->assertSame(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertResponseCode(Response::HTTP_BAD_REQUEST);
         $this->assertErrors($expectedErrors);
     }
 
@@ -96,17 +85,9 @@ class ZipcodeControllerTest extends AbstractControllerTest
         $existingZipcodes = $this->countExistingZipcodes();
         $zipcode = $this->createValidZipcodeData();
 
-        $this->client->request(
-            'POST',
-            self::URL,
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode($zipcode)
-        );
+        $this->requestPost(self::URL, $zipcode);
 
-        $this->assertSame(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
-        $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertResponseCode(Response::HTTP_CREATED);
         $this->assertSame($existingZipcodes + 1, $this->countExistingZipcodes());
     }
 
@@ -151,8 +132,8 @@ class ZipcodeControllerTest extends AbstractControllerTest
 
     private function countExistingZipcodes(): int
     {
-        $this->client->request('GET', self::URL);
-        $jobs = json_decode($this->client->getResponse()->getContent(), true);
+        $this->requestGet(self::URL);
+        $jobs = json_decode($this->getResponseContents(), true);
 
         return count($jobs);
     }

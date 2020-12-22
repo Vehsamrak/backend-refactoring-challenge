@@ -16,6 +16,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 abstract class AbstractControllerTest extends WebTestCase
 {
+    private const CONTENT_TYPE_JSON = ['Content-Type' => 'application/json'];
+
     /**
      * @var EntityManager
      */
@@ -24,7 +26,7 @@ abstract class AbstractControllerTest extends WebTestCase
     /**
      * @var Client
      */
-    protected $client;
+    private $client;
 
     public function setUp(): void
     {
@@ -58,6 +60,11 @@ abstract class AbstractControllerTest extends WebTestCase
         );
     }
 
+    protected function assertResponseCode(int $httpCode): void
+    {
+        $this->assertSame($httpCode, $this->getResponseCode());
+    }
+
     protected function loadJobCategoryFixtures(): void
     {
         $this->load(new JobCategoryFixtures());
@@ -76,6 +83,34 @@ abstract class AbstractControllerTest extends WebTestCase
     private function load(Fixture $fixture): void
     {
         $fixture->load($this->entityManager);
+    }
+
+    protected function requestGet(string $url, array $parameters = []): void
+    {
+        $this->client->request('GET', $url, $parameters, [], self::CONTENT_TYPE_JSON);
+    }
+
+    protected function requestPost(string $url, array $parameters): void
+    {
+        $this->client->request('POST', $url, [], [], self::CONTENT_TYPE_JSON, json_encode($parameters));
+    }
+
+    protected function requestPut(string $url, array $parameters = []): void
+    {
+        $this->client->request('PUT', $url, [], [], self::CONTENT_TYPE_JSON, json_encode($parameters));
+    }
+
+    protected function getResponseContents(): string
+    {
+        $response = $this->client->getResponse()->getContent();
+        $this->assertJson($response);
+
+        return $response;
+    }
+
+    protected function getResponseCode(): int
+    {
+        return $this->client->getResponse()->getStatusCode();
     }
 
     public function tearDown(): void

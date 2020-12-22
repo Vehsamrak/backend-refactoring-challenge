@@ -10,6 +10,9 @@ use AppBundle\Services\EntityUpdater\AbstractEntityUpdater;
 use AppBundle\Services\EntityUpdater\EntityUpdaterInterface;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group unit
+ */
 class AbstractEntityUpdaterTest extends TestCase
 {
     private const ENTITY_ID = 1;
