@@ -104,6 +104,7 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Remove apache configuration files
 * Strict types declaration in every php file
 * Deprecated XDebug parameters changed to new values in PHP Dockerfile
+* Configuration files cleaned up. Unused packages removed
 
 ### Could be done in future
 * Implementation of all CRUD methods for Job, JobCategory and Zipcode.
@@ -114,3 +115,4 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * SQLite could be used for functional tests instead of MySQL.
 * PHP version locked in composer.json could be raised.
 * "Entity services" layer had transparent logic, so I moved logic to controllers. Because I dont like to see HTTP and validation logic outside controllers, and services before refactoring does not perform other actions. If there would be some buisiness logic requirements in future, I would create Factories to create entities. So for now I chose simplicity over preoptimization.
+* PHP sessions could be stored in Redis, instead of file system for better performance due to slow disk read/write.
