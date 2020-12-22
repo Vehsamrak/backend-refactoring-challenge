@@ -8,9 +8,3 @@ parameters:
     database_user: root
     database_password: root
     secret: secret
-    mailer_transport: null
-    mailer_host: null
-    mailer_user: null
-    mailer_password: null
-    # You should uncomment this if you want to use pdo_sqlite
-    #database_path: '%kernel.project_dir%/var/data/data.sqlite'
