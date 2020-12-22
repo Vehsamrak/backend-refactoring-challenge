@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AppBundle\Services\EntityUpdater;
 
-use AppBundle\Dto\UpdateJobRequest;
+use AppBundle\Dto;
 use AppBundle\Entity\EntityInterface;
 use AppBundle\Entity\Job;
 use AppBundle\Exception\EntityNotFoundException;
@@ -41,7 +41,7 @@ class JobUpdater implements EntityUpdaterInterface
 
     public function update($entityId, EntityAwareInterface $entityAware): EntityInterface
     {
-        if (!$entityAware instanceof UpdateJobRequest) {
+        if (!$entityAware instanceof Dto\UpdateJobRequest) {
             throw new InvalidEntityException($entityAware);
         }
 

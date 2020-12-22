@@ -23,7 +23,7 @@ class JobCategory implements EntityInterface, JsonSerializable
      * @ORM\Column(name="id", type="integer", unique=true, nullable=false)
      * @JMS\Type("string")
      * @JMS\SerializedName("id")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Job category id is mandatory")
      */
     private $id;
 
@@ -34,8 +34,8 @@ class JobCategory implements EntityInterface, JsonSerializable
      * @Assert\Length(
      *      min = 5,
      *      max = 255,
-     *      minMessage = "The name must have at least 5 characters",
-     *      maxMessage = "The name must have less than 256 characters"
+     *      minMessage = "Job category name must have at least {{ limit }} characters",
+     *      maxMessage = "Job category name must have less than {{ limit }} characters"
      * )
      * @Assert\NotBlank()
      */

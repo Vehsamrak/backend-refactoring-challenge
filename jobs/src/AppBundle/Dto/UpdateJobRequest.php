@@ -18,7 +18,8 @@ class UpdateJobRequest implements EntityAwareInterface
      * @Assert\NotBlank(message="Job category should not be blank")
      * @AppBundle\Services\Validator\EntityExistsConstraint(
      *     name="Job category",
-     *     entityClassName="AppBundle\Entity\JobCategory"
+     *     entityClassName="AppBundle\Entity\JobCategory",
+     *     exists=true
      * )
      * @var int
      */
@@ -36,7 +37,8 @@ class UpdateJobRequest implements EntityAwareInterface
      * @Assert\NotBlank(message="Zipcode should not be blank")
      * @AppBundle\Services\Validator\EntityExistsConstraint(
      *     name="Zipcode",
-     *     entityClassName="AppBundle\Entity\Zipcode"
+     *     entityClassName="AppBundle\Entity\Zipcode",
+     *     exists=true
      * )
      * @var int
      */

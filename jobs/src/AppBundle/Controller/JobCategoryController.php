@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\JobCategory;
+use AppBundle\Dto\UpdateJobCategoryRequest;
 use AppBundle\Repository\JobCategoryRepository;
 use AppBundle\Services\EntityFactory\AbstractEntityFactory;
 use AppBundle\Services\EntityUpdater\AbstractEntityUpdater;
@@ -69,6 +69,6 @@ class JobCategoryController extends AbstractController
      */
     public function postAction(Request $request): Response
     {
-        return $this->validateAndCreate($request->getContent(), JobCategory::class);
+        return $this->validateAndUpsert($request->getContent(), UpdateJobCategoryRequest::class);
     }
 }

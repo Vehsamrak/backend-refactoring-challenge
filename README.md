@@ -88,8 +88,8 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Job entity validation moved to validator class. New custom validation constraint annotation implemented
 * New unit tests naming strtegy applies pattern: "methodUnderTest_GivenState_ExpectedResult". Try-catch block used in tests instead of @expectedException annotation, to achieve AAA-pattern.
 * Serialization used for entities creation, instead of arrays mapping. JMSSerializer is used for deserialization, while JsonSerializable interface is used for serialization, because native serialization is much faster (no library overhead) and simpler to use for client code (less code, no dependencies, json_encode support).
-* Builders removed in sake of serialization. Requests are serialized directly to entities. DTOs weren't used because in current case only annotation would differ them from existing entities. I would use DTO if there are endpoints with different request parameters, different validation, or if objects must be transfered to external bundle.  
-* Remove app/Resources with unused views
+* Builders removed. Requests are serialized into DTOs, validates and then goes to entity factories with explicit object mapping, instead of arrays usage.
+* Remove app/Resources with unused views.
 * [Critical] TargetEntity property in ORM\ManyToOne annotation in Job entity has typo. Fixed to valid related entity classname.
 * IDE specific ".idea" was removed from job directory gitignore. Templates for various editors and operating systems must be presented in global gitignore config, not on the project level. Root level .gitignore was truncated to reduce duplication.
 * Composer updated to 2.0. Cache volumes are stored correctly
@@ -98,13 +98,14 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Job entity has annotation @ORM\GeneratedValue with UUID strategy, and therefore should not have id in constructor
 * Generate job entity uuid on backend instead of client or database. Custom IdGenerator generator created, because Doctrine generator uses database SELECT to create UUID. It is better for testing and performance to have generator on the application side.
 * SQL should be present only in repositories. Job service refactored to create SQL with query builder.
-* [Critical] @ORM\JoinColumn annotation in Job entity related to zipcode points to wrong field (category_id).
+* [Critical] Fixed @ORM\JoinColumn annotation in Job entity related to zipcode points to wrong field (category_id).
 * Validate DTOs
 * Get rid of static methods
 * Remove apache configuration files
 * Strict types declaration in every php file
 * Deprecated XDebug parameters changed to new values in PHP Dockerfile
 * Configuration files cleaned up. Unused packages removed
+
 
 ### Could be done in future
 * Implementation of all CRUD methods for Job, JobCategory and Zipcode.

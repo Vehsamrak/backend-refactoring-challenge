@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AppBundle\Controller;
 
-use AppBundle\Dto\ValidationErrorResponse;
+use AppBundle\Dto;
 use AppBundle\Exception\ClassNotFoundException;
 use AppBundle\Exception\InterfaceException;
 use AppBundle\Repository\SearchParametersInterface;
@@ -69,7 +69,7 @@ abstract class AbstractController
         $validationErrors = $this->validator->validate($searchParameters);
 
         if (count($validationErrors) > 0) {
-            return new ValidationErrorResponse($validationErrors);
+            return new Dto\ValidationErrorResponse($validationErrors);
         }
 
         $repository = $this->entityManager->getRepository($searchParameters->getEntityClassName());
@@ -126,7 +126,7 @@ abstract class AbstractController
 
         $validationErrors = $this->validator->validate($entityAware);
         if (count($validationErrors) > 0) {
-            return new ValidationErrorResponse($validationErrors);
+            return new Dto\ValidationErrorResponse($validationErrors);
         }
 
         if (null === $entityId) {

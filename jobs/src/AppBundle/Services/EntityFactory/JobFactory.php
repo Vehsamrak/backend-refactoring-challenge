@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace AppBundle\Services\EntityFactory;
 
-use AppBundle\Dto\CreateJobRequest;
-use AppBundle\Dto\UpdateJobRequest;
+use AppBundle\Dto;
 use AppBundle\Entity\EntityInterface;
 use AppBundle\Entity\Job;
 use AppBundle\Exception\InvalidEntityException;
@@ -40,7 +39,7 @@ class JobFactory implements EntityFactoryInterface
 
     public function create(EntityAwareInterface $entityAware): EntityInterface
     {
-        if (!$entityAware instanceof UpdateJobRequest) {
+        if (!$entityAware instanceof Dto\UpdateJobRequest) {
             throw new InvalidEntityException($entityAware);
         }
 

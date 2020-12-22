@@ -53,9 +53,13 @@ class EntityExistsConstraintValidator extends ConstraintValidator
             throw new UnexpectedTypeException($repository, ObjectRepository::class);
         }
 
-        if (!$this->entityExists($repository, $entityId)) {
+        if ($this->entityExists($repository, $entityId, $constraint->exists)) {
+            $message = $constraint->exists
+                ? $constraint->messageNotFound
+                : $constraint->messageFound;
+
             $this->context
-                ->buildViolation($constraint->message)
+                ->buildViolation($message)
                 ->setParameter('{{ name }}', ucfirst($constraint->name))
                 ->setParameter('{{ value }}', $entityId)
                 ->addViolation();
@@ -67,10 +71,12 @@ class EntityExistsConstraintValidator extends ConstraintValidator
         return in_array(EntityInterface::class, class_implements($entityClassName), true);
     }
 
-    private function entityExists(ObjectRepository $repository, $entityId): bool
+    private function entityExists(ObjectRepository $repository, $entityId, bool $exists): bool
     {
         $entity = $repository->find($entityId);
 
-        return null !== $entity;
+        return $exists
+            ? null === $entity
+            : null !== $entity;
     }
 }

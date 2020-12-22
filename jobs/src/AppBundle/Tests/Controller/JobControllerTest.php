@@ -98,6 +98,8 @@ class JobControllerTest extends AbstractControllerTest
      */
     public function postJob_GivenValidJob_NewJobCreated(): void
     {
+        $existingJobsCount = $this->countExistingJobs();
+
         $this->client->request(
             'POST',
             '/job',
@@ -109,7 +111,7 @@ class JobControllerTest extends AbstractControllerTest
 
         $this->assertSame(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
         $this->assertJson($this->client->getResponse()->getContent());
-
+        $this->assertSame($existingJobsCount + 1, $this->countExistingJobs());
     }
 
     /**
@@ -151,24 +153,6 @@ class JobControllerTest extends AbstractControllerTest
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertJson($this->client->getResponse()->getContent());
         $this->assertArraySubset($updatedJobData, $this->fetchExistingJob($jobId));
-    }
-
-    private function fetchExistingJob(?string $id = null): array
-    {
-        if (null === $id) {
-            $this->client->request('GET', '/job');
-        } else {
-            $this->client->request('GET', '/job/'.$id);
-        }
-
-        $jobs = json_decode($this->client->getResponse()->getContent(), true);
-
-        return $jobs[0] ?? $jobs;
-    }
-
-    private function fetchExistingJobId(): string
-    {
-        return $this->fetchExistingJob()['id'];
     }
 
     protected function createValidJobData(): array
@@ -219,6 +203,32 @@ class JobControllerTest extends AbstractControllerTest
                 ['title' => 'The title must have less than 51 characters'],
             ],
         ];
+    }
+
+    private function fetchExistingJob(?string $id = null): array
+    {
+        if (null === $id) {
+            $this->client->request('GET', '/job');
+        } else {
+            $this->client->request('GET', '/job/'.$id);
+        }
+
+        $jobs = json_decode($this->client->getResponse()->getContent(), true);
+
+        return $jobs[0] ?? $jobs;
+    }
+
+    private function countExistingJobs(): int
+    {
+        $this->client->request('GET', '/job');
+        $jobs = json_decode($this->client->getResponse()->getContent(), true);
+
+        return count($jobs);
+    }
+
+    private function fetchExistingJobId(): string
+    {
+        return $this->fetchExistingJob()['id'];
     }
 
     public function provideSearchParameters(): array

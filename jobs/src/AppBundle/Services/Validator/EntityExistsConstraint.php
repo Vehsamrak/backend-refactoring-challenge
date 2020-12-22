@@ -15,12 +15,23 @@ class EntityExistsConstraint extends Constraint
     /**
      * @var string
      */
-    public $message = '{{ name }} "{{ value }}" was not found';
+    public $messageFound = '{{ name }} "{{ value }}" already exists';
+
+    /**
+     * @var string
+     */
+    public $messageNotFound = '{{ name }} "{{ value }}" was not found';
 
     /**
      * @var string
      */
     public $name = 'Entity';
+
+    /**
+     * Check that entity exists if "true", and not exists if "false"
+     * @var bool
+     */
+    public $exists = true;
 
     /**
      * @var string
