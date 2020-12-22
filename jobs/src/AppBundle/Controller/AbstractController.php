@@ -83,28 +83,6 @@ abstract class AbstractController
     }
 
     /**
-     * @param string $entityDataJson
-     * @param string $entityClassName
-     * @return JsonResponse
-     * @throws ClassNotFoundException
-     */
-    protected function validateAndCreate(string $entityDataJson, string $entityClassName): JsonResponse
-    {
-        return $this->validateAndUpsert($entityDataJson, $entityClassName);
-    }
-
-    /**
-     * @param string $entityDataJson
-     * @param string $entityClassName
-     * @return JsonResponse
-     * @throws ClassNotFoundException
-     */
-    protected function validateAndUpdate(string $entityDataJson, string $entityClassName): JsonResponse
-    {
-        return $this->validateAndUpsert($entityDataJson, $entityClassName, false);
-    }
-
-    /**
      * @param string          $entityDataJson
      * @param string          $entityAwareClassName
      * @param string|int|null $entityId

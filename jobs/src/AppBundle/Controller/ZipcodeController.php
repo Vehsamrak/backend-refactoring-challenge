@@ -61,6 +61,6 @@ class ZipcodeController extends AbstractController
      */
     public function postAction(Request $request): Response
     {
-        return $this->validateAndCreate($request->getContent(), Dto\UpdateZipcodeRequest::class);
+        return $this->validateAndUpsert($request->getContent(), Dto\UpdateZipcodeRequest::class);
     }
 }
