@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace AppBundle\Controller;
 
 use AppBundle\Dto;
-use AppBundle\Entity\Job;
 use AppBundle\Repository\JobRepository;
+use AppBundle\Services\EntityFactory\AbstractEntityFactory;
+use AppBundle\Services\EntityUpdater\AbstractEntityUpdater;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,9 +26,11 @@ class JobController extends AbstractController
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
-        JobRepository $jobRepository
+        JobRepository $jobRepository,
+        AbstractEntityFactory $entityFactory,
+        AbstractEntityUpdater $entityUpdater
     ) {
-        parent::__construct($entityManager, $serializer, $validator);
+        parent::__construct($entityManager, $serializer, $validator, $entityFactory, $entityUpdater);
         $this->jobRepository = $jobRepository;
     }
 
@@ -42,8 +45,6 @@ class JobController extends AbstractController
         return $this->validateAndSearch($request->query->all(), Dto\SearchJobRequest::class);
     }
 
-    // TODO[petr]: use paramconverter
-
     /**
      * @Rest\Get("/job/{id}")
      * @param $id
@@ -52,6 +53,7 @@ class JobController extends AbstractController
      */
     public function getAction($id): Response
     {
+        // TODO[petr]: paramconverter
         $job = $this->jobRepository->findById($id);
         if (null === $job) {
             // TODO[petr]: Use ErrorResponse
@@ -70,7 +72,7 @@ class JobController extends AbstractController
      */
     public function postAction(Request $request): Response
     {
-        return $this->validateAndCreate($request->getContent(), Job::class);
+        return $this->validateAndUpsert($request->getContent(), Dto\UpdateJobRequest::class);
     }
 
     /**
@@ -81,11 +83,12 @@ class JobController extends AbstractController
      */
     public function putAction(string $id, Request $request): Response
     {
+        // TODO[petr]: use paramconverter
         $job = $this->jobRepository->findById($id);
         if (null === $job) {
             return new JsonResponse('Job not found', Response::HTTP_NOT_FOUND);
         }
 
-        return $this->validateAndUpdate($request->getContent(), Job::class);
+        return $this->validateAndUpsert($request->getContent(), Dto\UpdateJobRequest::class, $id);
     }
 }

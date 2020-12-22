@@ -6,6 +6,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Zipcode;
 use AppBundle\Repository\ZipcodeRepository;
+use AppBundle\Services\EntityFactory\AbstractEntityFactory;
+use AppBundle\Services\EntityUpdater\AbstractEntityUpdater;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,9 +25,11 @@ class ZipcodeController extends AbstractController
         ZipcodeRepository $zipcodeRepository,
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        AbstractEntityFactory $entityFactory,
+        AbstractEntityUpdater $entityUpdater
     ) {
-        parent::__construct($entityManager, $serializer, $validator);
+        parent::__construct($entityManager, $serializer, $validator, $entityFactory, $entityUpdater);
         $this->zipcodeRepository = $zipcodeRepository;
     }
 
@@ -40,11 +44,11 @@ class ZipcodeController extends AbstractController
 
     /**
      * @Rest\Get("/zipcode/{id}")
-     * @param $id
+     * @param int $id
      * @return Response
      * @throws NotFoundHttpException
      */
-    public function getAction($id): Response
+    public function getAction(int $id): Response
     {
         // TODO[petr]: use integer instead of string
         $entity = $this->zipcodeRepository->findById($id);

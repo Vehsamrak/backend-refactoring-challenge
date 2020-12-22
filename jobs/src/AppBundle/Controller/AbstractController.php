@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace AppBundle\Controller;
 
 use AppBundle\Dto\ValidationErrorResponse;
-use AppBundle\Entity\EntityInterface;
 use AppBundle\Exception\ClassNotFoundException;
 use AppBundle\Exception\InterfaceException;
 use AppBundle\Repository\SearchParametersInterface;
 use AppBundle\Repository\SearchRepositoryInterface;
+use AppBundle\Services\EntityFactory\AbstractEntityFactory;
+use AppBundle\Services\EntityFactory\EntityAwareInterface;
+use AppBundle\Services\EntityUpdater\AbstractEntityUpdater;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\Exception\RuntimeException as JMSRuntimeException;
 use JMS\Serializer\SerializerInterface;
@@ -25,25 +27,22 @@ abstract class AbstractController
 
     private $validator;
 
+    private $entityFactory;
+
+    private $entityUpdater;
+
     public function __construct(
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        AbstractEntityFactory $entityFactory,
+        AbstractEntityUpdater $entityUpdater
     ) {
         $this->entityManager = $entityManager;
         $this->serializer = $serializer;
         $this->validator = $validator;
-    }
-
-    /**
-     * @param string $entityDataJson
-     * @param string $entityClassName
-     * @return JsonResponse
-     * @throws ClassNotFoundException
-     */
-    protected function validateAndCreate(string $entityDataJson, string $entityClassName): JsonResponse
-    {
-        return $this->validateAndUpsert($entityDataJson, $entityClassName, true);
+        $this->entityFactory = $entityFactory;
+        $this->entityUpdater = $entityUpdater;
     }
 
     /**
@@ -89,56 +88,66 @@ abstract class AbstractController
      * @return JsonResponse
      * @throws ClassNotFoundException
      */
+    protected function validateAndCreate(string $entityDataJson, string $entityClassName): JsonResponse
+    {
+        return $this->validateAndUpsert($entityDataJson, $entityClassName);
+    }
+
+    /**
+     * @param string $entityDataJson
+     * @param string $entityClassName
+     * @return JsonResponse
+     * @throws ClassNotFoundException
+     */
     protected function validateAndUpdate(string $entityDataJson, string $entityClassName): JsonResponse
     {
         return $this->validateAndUpsert($entityDataJson, $entityClassName, false);
     }
 
     /**
-     * @param string $entityDataJson
-     * @param string $entityClassName
-     * @param bool   $isEntityNew
+     * @param string          $entityDataJson
+     * @param string          $entityAwareClassName
+     * @param string|int|null $entityId
      * @return JsonResponse
      */
     protected function validateAndUpsert(
         string $entityDataJson,
-        string $entityClassName,
-        bool $isEntityNew
+        string $entityAwareClassName,
+        $entityId = null
     ): JsonResponse {
-        $this->checkEntityClass($entityClassName);
+        $this->checkEntityAwareClass($entityAwareClassName);
 
         try {
-            $entity = $this->serializer->deserialize($entityDataJson, $entityClassName, 'json');
+            /** @var EntityAwareInterface $entityAware */
+            $entityAware = $this->serializer->deserialize($entityDataJson, $entityAwareClassName, 'json');
         } catch (JMSRuntimeException $JMSException) {
             return new JsonResponse('JSON is malformed', Response::HTTP_BAD_REQUEST);
         }
 
-        $validationErrors = $this->validator->validate($entity);
+        $validationErrors = $this->validator->validate($entityAware);
         if (count($validationErrors) > 0) {
             return new ValidationErrorResponse($validationErrors);
         }
 
-        if ($isEntityNew) {
-            $this->entityManager->persist($entity);
+        if (null === $entityId) {
+            $entity = $this->entityFactory->create($entityAware);
             $returnCode = Response::HTTP_CREATED;
         } else {
-            $this->entityManager->merge($entity);
+            $entity = $this->entityUpdater->update($entityId, $entityAware);
             $returnCode = Response::HTTP_OK;
         }
-
-        $this->entityManager->flush();
 
         return new JsonResponse($entity, $returnCode);
     }
 
-    private function checkEntityClass(string $entityClassName): void
+    private function checkEntityAwareClass(string $entityAwareClassName): void
     {
-        if (!class_exists($entityClassName)) {
-            throw new ClassNotFoundException($entityClassName);
+        if (!class_exists($entityAwareClassName)) {
+            throw new ClassNotFoundException($entityAwareClassName);
         }
 
-        if (!in_array(EntityInterface::class, class_implements($entityClassName), true)) {
-            throw new InterfaceException($entityClassName, EntityInterface::class);
+        if (!in_array(EntityAwareInterface::class, class_implements($entityAwareClassName), true)) {
+            throw new InterfaceException($entityAwareClassName, EntityAwareInterface::class);
         }
     }
 

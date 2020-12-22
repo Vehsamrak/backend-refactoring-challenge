@@ -6,6 +6,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\JobCategory;
 use AppBundle\Repository\JobCategoryRepository;
+use AppBundle\Services\EntityFactory\AbstractEntityFactory;
+use AppBundle\Services\EntityUpdater\AbstractEntityUpdater;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,9 +25,11 @@ class JobCategoryController extends AbstractController
         EntityManagerInterface $entityManager,
         JobCategoryRepository $jobCategoryRepository,
         SerializerInterface $serializer,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        AbstractEntityFactory $entityFactory,
+        AbstractEntityUpdater $entityUpdater
     ) {
-        parent::__construct($entityManager, $serializer, $validator);
+        parent::__construct($entityManager, $serializer, $validator, $entityFactory, $entityUpdater);
         $this->jobCategoryRepository = $jobCategoryRepository;
     }
 

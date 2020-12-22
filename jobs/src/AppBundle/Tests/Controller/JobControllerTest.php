@@ -20,18 +20,16 @@ class JobControllerTest extends AbstractControllerTest
     public function setUp(): void
     {
         parent::setUp();
-        $this->loadJobCategoryFixtures();
-        $this->loadZipcodeFixtures();
         $this->loadJobFixtures();
     }
 
     /**
      * @test
      * @dataProvider provideSearchParameters
-     * @param array $parameters
+     * @param array    $parameters
      * @param int|null $categoryId
      * @param int|null $zipcodeId
-     * @param int $jobsCount
+     * @param int      $jobsCount
      */
     public function getJob_GivenSearchParameters_ReturnsOnlyMatchedJobs(
         array $parameters,
@@ -137,7 +135,9 @@ class JobControllerTest extends AbstractControllerTest
      */
     public function putJob_GivenExistingJob_ExistingJobUpdated(): void
     {
-        $jobId = $this->fetchExistingJobId();
+        $job = $this->fetchExistingJob();
+        $jobId = $job['id'];
+        $updatedJobData = ['title' => 'updated'] + $job;
 
         $this->client->request(
             'PUT',
@@ -145,26 +145,37 @@ class JobControllerTest extends AbstractControllerTest
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            json_encode($this->createValidJobData())
+            json_encode($updatedJobData)
         );
 
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertArraySubset($updatedJobData, $this->fetchExistingJob($jobId));
+    }
+
+    private function fetchExistingJob(?string $id = null): array
+    {
+        if (null === $id) {
+            $this->client->request('GET', '/job');
+        } else {
+            $this->client->request('GET', '/job/'.$id);
+        }
+
+        $jobs = json_decode($this->client->getResponse()->getContent(), true);
+
+        return $jobs[0] ?? $jobs;
     }
 
     private function fetchExistingJobId(): string
     {
-        $this->client->request('GET', '/job');
-        $allJobs = json_decode($this->client->getResponse()->getContent(), true);
-
-        return $allJobs[0]['id'];
+        return $this->fetchExistingJob()['id'];
     }
 
     protected function createValidJobData(): array
     {
         return [
-            'categoryId' => JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID,
-            'zipcodeId' => ZipcodeFixtures::EXISTING_ZIPCODE_ID,
+            'categoryId' => JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1,
+            'zipcodeId' => ZipcodeFixtures::EXISTING_ZIPCODE_ID_1,
             'title' => 'title',
             'description' => 'decription',
             'dateToBeDone' => '2018-11-11',
@@ -218,14 +229,14 @@ class JobControllerTest extends AbstractControllerTest
             'limit 1' => [['limit' => 1], null, null, 1],
             'limit 1 offset 100' => [['limit' => 1, 'offset' => 100], null, null, 0],
             'zipcode' => [
-                ['zipcodeId' => ZipcodeFixtures::EXISTING_ZIPCODE_ID],
+                ['zipcodeId' => ZipcodeFixtures::EXISTING_ZIPCODE_ID_1],
                 null,
-                ZipcodeFixtures::EXISTING_ZIPCODE_ID,
+                ZipcodeFixtures::EXISTING_ZIPCODE_ID_1,
                 1,
             ],
             'category' => [
-                ['categoryId' => JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID],
-                JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID,
+                ['categoryId' => JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1],
+                JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1,
                 null,
                 1,
             ],
@@ -257,7 +268,7 @@ class JobControllerTest extends AbstractControllerTest
     private function assertJobsCategory(?int $categoryId): void
     {
         if (null === $categoryId) {
-        	return;
+            return;
         }
 
         $responseContent = $this->client->getResponse()->getContent();
