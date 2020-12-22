@@ -27,20 +27,25 @@ class JobControllerTest extends AbstractControllerTest
 
     /**
      * @test
+     * @dataProvider provideSearchParameters
+     * @param array $parameters
+     * @param int|null $categoryId
+     * @param int|null $zipcodeId
+     * @param int $jobsCount
      */
-    public function getJob_GivenNoParameters_ReturnsAllJobsWithDefaulLimit(): void
-    {
-        $this->client->request('GET', '/job');
+    public function getJob_GivenSearchParameters_ReturnsOnlyMatchedJobs(
+        array $parameters,
+        ?int $categoryId,
+        ?int $zipcodeId,
+        int $jobsCount
+    ): void {
+        $this->client->request('GET', '/job', $parameters);
 
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-    }
-
-    /**
-     * @test
-     */
-    public function getJob_GivenSearchParameters_ReturnsOnlyMatchedJobs(): void
-    {
-        // TODO[petr]: implement this
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertJobsCount($jobsCount);
+        $this->assertJobsCategory($categoryId);
+        $this->assertJobsZipcode($zipcodeId);
     }
 
     /**
@@ -52,7 +57,8 @@ class JobControllerTest extends AbstractControllerTest
 
         $this->client->request('GET', sprintf('/job/%s', $jobId));
 
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
     }
 
     /**
@@ -62,7 +68,8 @@ class JobControllerTest extends AbstractControllerTest
     {
         $this->client->request('GET', sprintf('/job/%s', JobFixtures::UNEXISTING_JOB_ID));
 
-        $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
     }
 
     /**
@@ -83,46 +90,9 @@ class JobControllerTest extends AbstractControllerTest
             json_encode($invalidJobData)
         );
 
-        $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
         $this->assertErrors($expectedErrors);
-    }
-
-    /**
-     * @test
-     */
-    public function postJob_GivenUnexistingCategory_ReturnsBadRequestError(): void
-    {
-        $validJob = [['category' => JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID] + $this->createValidJobData()];
-
-        $this->client->request(
-            'POST',
-            '/job',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode($validJob)
-        );
-
-        $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
-    }
-
-    /**
-     * @test
-     */
-    public function postJob_GivenUnexistingZipcode_ReturnsBadRequestError(): void
-    {
-        $validJob = [['zipcode' => ZipcodeFixtures::UNEXISTING_ZIPCODE_ID] + $this->createValidJobData()];
-
-        $this->client->request(
-            'POST',
-            '/job',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode($validJob)
-        );
-
-        $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
     }
 
     /**
@@ -139,7 +109,9 @@ class JobControllerTest extends AbstractControllerTest
             json_encode($this->createValidJobData())
         );
 
-        $this->assertEquals(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
+
     }
 
     /**
@@ -156,7 +128,8 @@ class JobControllerTest extends AbstractControllerTest
             json_encode($this->createValidJobData())
         );
 
-        $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
     }
 
     /**
@@ -175,7 +148,8 @@ class JobControllerTest extends AbstractControllerTest
             json_encode($this->createValidJobData())
         );
 
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
     }
 
     private function fetchExistingJobId(): string
@@ -236,10 +210,31 @@ class JobControllerTest extends AbstractControllerTest
         ];
     }
 
+    public function provideSearchParameters(): array
+    {
+        return [
+            'no parameters' => [[], null, null, 2],
+            'limit 0' => [['limit' => 0], null, null, 0],
+            'limit 1' => [['limit' => 1], null, null, 1],
+            'limit 1 offset 100' => [['limit' => 1, 'offset' => 100], null, null, 0],
+            'zipcode' => [
+                ['zipcodeId' => ZipcodeFixtures::EXISTING_ZIPCODE_ID],
+                null,
+                ZipcodeFixtures::EXISTING_ZIPCODE_ID,
+                1,
+            ],
+            'category' => [
+                ['categoryId' => JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID],
+                JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID,
+                null,
+                1,
+            ],
+        ];
+    }
+
     private function assertErrors(array $expectedErrors): void
     {
         $responseContent = $this->client->getResponse()->getContent();
-        $this->assertJson($responseContent);
 
         $responseData = json_decode($responseContent, true);
         $responseDataErrors = $responseData['errors'] ?? [];
@@ -249,5 +244,41 @@ class JobControllerTest extends AbstractControllerTest
             true,
             sprintf('Actual errors: %s', json_encode($responseDataErrors))
         );
+    }
+
+    private function assertJobsCount(int $jobsCount): void
+    {
+        $responseContent = $this->client->getResponse()->getContent();
+        $responseData = json_decode($responseContent, true);
+
+        $this->assertCount($jobsCount, $responseData);
+    }
+
+    private function assertJobsCategory(?int $categoryId): void
+    {
+        if (null === $categoryId) {
+        	return;
+        }
+
+        $responseContent = $this->client->getResponse()->getContent();
+        $responseData = json_decode($responseContent, true);
+
+        foreach ($responseData as $job) {
+            $this->assertSame($job['categoryId'], $categoryId);
+        }
+    }
+
+    private function assertJobsZipcode(?int $zipcodeId): void
+    {
+        if (null === $zipcodeId) {
+            return;
+        }
+
+        $responseContent = $this->client->getResponse()->getContent();
+        $responseData = json_decode($responseContent, true);
+
+        foreach ($responseData as $job) {
+            $this->assertSame($job['zipcodeId'], $zipcodeId);
+        }
     }
 }

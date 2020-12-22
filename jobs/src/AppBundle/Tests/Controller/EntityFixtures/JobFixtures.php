@@ -18,15 +18,25 @@ class JobFixtures extends Fixture
      */
     public function load(ObjectManager $manager): void
     {
-        $job = new Job(
-            JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID,
-            ZipcodeFixtures::EXISTING_ZIPCODE_ID,
-            'title',
-            'decription',
-            new DateTime('2018-11-11')
+        $manager->persist(
+            new Job(
+                JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID,
+                ZipcodeFixtures::EXISTING_ZIPCODE_ID,
+                'first job',
+                'decription',
+                new DateTime('2018-11-11')
+            )
+        );
+        $manager->persist(
+            new Job(
+                JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_2,
+                ZipcodeFixtures::EXISTING_ZIPCODE_ID_2,
+                'second job',
+                'decription',
+                new DateTime('2018-11-11')
+            )
         );
 
-        $manager->persist($job);
         $manager->flush();
     }
 }

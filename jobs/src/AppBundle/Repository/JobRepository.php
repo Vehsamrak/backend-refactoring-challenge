@@ -50,14 +50,14 @@ class JobRepository extends ServiceEntityRepository implements SearchRepositoryI
         $categoryId = $jobSearchParameters->getCategoryId();
         if (null !== $categoryId) {
             $queryBuilder
-                ->andWhere('job.category = :categoryId')
+                ->andWhere('job.categoryId = :categoryId')
                 ->setParameter('categoryId', $categoryId);
         }
 
         $zipcodeId = $jobSearchParameters->getZipcodeId();
         if (null !== $zipcodeId) {
             $queryBuilder
-                ->andWhere('job.zipcode = :categoryId')
+                ->andWhere('job.zipcodeId = :zipcodeId')
                 ->setParameter('zipcodeId', $zipcodeId);
         }
 

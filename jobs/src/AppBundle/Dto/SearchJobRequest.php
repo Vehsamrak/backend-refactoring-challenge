@@ -6,22 +6,47 @@ namespace AppBundle\Dto;
 
 use AppBundle\Entity\Job;
 use AppBundle\Repository\SearchParametersInterface;
+use JMS\Serializer\Annotation as JMS;
 
-// TODO[petr]: Json serialize properties
 class SearchJobRequest implements SearchParametersInterface
 {
     private const DEFAULT_DAYS_COUNT = 30;
     private const DEFAULT_LIMIT = 100;
     private const DEFAULT_OFFSET = 0;
 
+    /**
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("daysCount")
+     * @var int
+     */
     private $daysCount = self::DEFAULT_DAYS_COUNT;
 
+    /**
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("categoryId")
+     * @var int
+     */
     private $categoryId;
 
+    /**
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("zipcodeId")
+     * @var int
+     */
     private $zipcodeId;
 
+    /**
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("limit")
+     * @var int
+     */
     private $limit = self::DEFAULT_LIMIT;
 
+    /**
+     * @JMS\Type("integer")
+     * @JMS\SerializedName("offset")
+     * @var int
+     */
     private $offset = self::DEFAULT_OFFSET;
 
     public function __construct(

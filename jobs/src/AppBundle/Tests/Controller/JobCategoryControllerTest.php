@@ -102,7 +102,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            '{"id": 123, "name": "New Service"}'
+            '{"id": 123, "name": "New Category"}'
         );
 
         $this->assertEquals(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
