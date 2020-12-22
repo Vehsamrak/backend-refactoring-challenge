@@ -1,8 +1,9 @@
 build:
   environment:
     php:
-      version: 7.1.0
+      version: 7.2.0
 checks:
   php:
     code_rating: true
     duplication: true
+tests: false
