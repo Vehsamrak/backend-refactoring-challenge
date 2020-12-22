@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AppBundle\Tests\Services\EntityUpdater;
 
 use AppBundle\Entity\EntityInterface;
+use AppBundle\Exception\EntityUpdaterNotFoundException;
 use AppBundle\Services\EntityFactory\EntityAwareInterface;
 use AppBundle\Services\EntityUpdater\AbstractEntityUpdater;
 use AppBundle\Services\EntityUpdater\EntityUpdaterInterface;
@@ -31,6 +32,24 @@ class AbstractEntityUpdaterTest extends TestCase
         $result = $updater->update(self::ENTITY_ID, $entityAware);
 
         $this->assertSame($entity, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function update_GivenNoUpdatersAndEntityAware_UpdaterNotFoundException(): void
+    {
+        $updater = new AbstractEntityUpdater([]);
+        /** @var EntityAwareInterface $entityAware */
+        $entityAware = $this->createMock(EntityAwareInterface::class);
+        $exception = null;
+
+        try {
+            $updater->update(self::ENTITY_ID, $entityAware);
+        } catch (EntityUpdaterNotFoundException $exception) {
+        }
+
+        $this->assertNotNull($exception);
     }
 }
 

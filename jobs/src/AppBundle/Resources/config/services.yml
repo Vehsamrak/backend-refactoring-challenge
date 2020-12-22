@@ -34,3 +34,7 @@ services:
   AppBundle\Services\EntityUpdater\AbstractEntityUpdater:
     arguments:
       $updaters: !tagged app_bundle.entity_updater
+
+  AppBundle\EventListener\ExceptionListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 1 }

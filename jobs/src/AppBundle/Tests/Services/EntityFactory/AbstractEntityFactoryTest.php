@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AppBundle\Tests\Services\EntityFactory;
 
 use AppBundle\Entity\EntityInterface;
+use AppBundle\Exception\EntityFactoryNotFoundException;
 use AppBundle\Services\EntityFactory\AbstractEntityFactory;
 use AppBundle\Services\EntityFactory\EntityAwareInterface;
 use AppBundle\Services\EntityFactory\EntityFactoryInterface;
@@ -29,5 +30,23 @@ class AbstractEntityFactoryTest extends TestCase
         $result = $factory->create($entityAware);
 
         $this->assertSame($entity, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function create_GivenNoFactoriesAndEntityAware_FactoryNotFoundException(): void
+    {
+        $factory = new AbstractEntityFactory([]);
+        /** @var EntityAwareInterface $entityAware */
+        $entityAware = $this->createMock(EntityAwareInterface::class);
+        $exception = null;
+
+        try {
+            $factory->create($entityAware);
+        } catch (EntityFactoryNotFoundException $exception) {
+        }
+
+        $this->assertNotNull($exception);
     }
 }
