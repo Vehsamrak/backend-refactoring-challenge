@@ -14,9 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class JobControllerTest extends AbstractControllerTest
 {
-    private const INVALID_TITLE_TOO_SHORT = '1234';
-    private const INVALID_TITLE_TOO_LONG = '1234567890123456789012345678901234567890123456789012';
-
     public function setUp(): void
     {
         parent::setUp();
@@ -26,15 +23,15 @@ class JobControllerTest extends AbstractControllerTest
     /**
      * @test
      * @dataProvider provideSearchParameters
-     * @param array    $parameters
-     * @param int|null $categoryId
-     * @param int|null $zipcodeId
-     * @param int      $jobsCount
+     * @param array       $parameters
+     * @param int|null    $categoryId
+     * @param string|null $zipcodeId
+     * @param int         $jobsCount
      */
     public function getJob_GivenSearchParameters_ReturnsOnlyMatchedJobs(
         array $parameters,
         ?int $categoryId,
-        ?int $zipcodeId,
+        ?string $zipcodeId,
         int $jobsCount
     ): void {
         $this->client->request('GET', '/job', $parameters);
@@ -42,8 +39,8 @@ class JobControllerTest extends AbstractControllerTest
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertJson($this->client->getResponse()->getContent());
         $this->assertJobsCount($jobsCount);
-        $this->assertJobsCategory($categoryId);
-        $this->assertJobsZipcode($zipcodeId);
+        $this->assertJobCategory($categoryId);
+        $this->assertZipcode($zipcodeId);
     }
 
     /**
@@ -155,6 +152,67 @@ class JobControllerTest extends AbstractControllerTest
         $this->assertArraySubset($updatedJobData, $this->fetchExistingJob($jobId));
     }
 
+    public function provideInvalidJobRequests(): array
+    {
+        return [
+            'empty category' => [
+                ['categoryId' => null] + $this->createValidJobData(),
+                ['categoryId' => 'The categoryId should not be blank.'],
+            ],
+            'unexisting category' => [
+                ['categoryId' => JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID] + $this->createValidJobData(),
+                [
+                    'categoryId' => sprintf(
+                        'The category "%d" was not found.',
+                        JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID
+                    ),
+                ],
+            ],
+            'empty zipcode' => [
+                ['zipcodeId' => null] + $this->createValidJobData(),
+                ['zipcodeId' => 'The zipcodeId should not be blank.'],
+            ],
+            'unexisting zipcode' => [
+                ['zipcodeId' => ZipcodeFixtures::UNEXISTING_ZIPCODE_ID] + $this->createValidJobData(),
+                ['zipcodeId' => sprintf('The zipcode "%d" was not found.', ZipcodeFixtures::UNEXISTING_ZIPCODE_ID)],
+            ],
+            'empty title' => [
+                ['title' => null] + $this->createValidJobData(),
+                ['title' => 'The title should not be blank.'],
+            ],
+            'too short title' => [
+                ['title' => $this->createStringWithLength(4)] + $this->createValidJobData(),
+                ['title' => 'The title must have more than 4 characters.'],
+            ],
+            'too long title' => [
+                ['title' => $this->createStringWithLength(51)] + $this->createValidJobData(),
+                ['title' => 'The title must have less than 51 characters.'],
+            ],
+        ];
+    }
+
+    public function provideSearchParameters(): array
+    {
+        return [
+            'no parameters' => [[], null, null, 2],
+            'limit 0' => [['limit' => 0], null, null, 0],
+            'limit 1' => [['limit' => 1], null, null, 1],
+            'limit 1 offset 100' => [['limit' => 1, 'offset' => 100], null, null, 0],
+            'zipcode' => [
+                ['zipcodeId' => ZipcodeFixtures::EXISTING_ZIPCODE_ID_1],
+                null,
+                ZipcodeFixtures::EXISTING_ZIPCODE_ID_1,
+                1,
+            ],
+            'category' => [
+                ['categoryId' => JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1],
+                JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1,
+                null,
+                1,
+            ],
+        ];
+    }
+
     protected function createValidJobData(): array
     {
         return [
@@ -163,45 +221,6 @@ class JobControllerTest extends AbstractControllerTest
             'title' => 'title',
             'description' => 'decription',
             'dateToBeDone' => '2018-11-11',
-        ];
-    }
-
-    public function provideInvalidJobRequests(): array
-    {
-        return [
-            'empty category' => [
-                ['categoryId' => null] + $this->createValidJobData(),
-                ['categoryId' => 'Job category should not be blank'],
-            ],
-            'unexisting category' => [
-                ['categoryId' => JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID] + $this->createValidJobData(),
-                [
-                    'categoryId' => sprintf(
-                        'Job category "%d" was not found',
-                        JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID
-                    ),
-                ],
-            ],
-            'empty zipcode' => [
-                ['zipcodeId' => null] + $this->createValidJobData(),
-                ['zipcodeId' => 'Zipcode should not be blank'],
-            ],
-            'unexisting zipcode' => [
-                ['zipcodeId' => ZipcodeFixtures::UNEXISTING_ZIPCODE_ID] + $this->createValidJobData(),
-                ['zipcodeId' => sprintf('Zipcode "%d" was not found', ZipcodeFixtures::UNEXISTING_ZIPCODE_ID)],
-            ],
-            'empty title' => [
-                ['title' => null] + $this->createValidJobData(),
-                ['title' => 'Title should not be blank'],
-            ],
-            'too short title' => [
-                ['title' => self::INVALID_TITLE_TOO_SHORT] + $this->createValidJobData(),
-                ['title' => 'The title must have more than 4 characters'],
-            ],
-            'too long title' => [
-                ['title' => self::INVALID_TITLE_TOO_LONG] + $this->createValidJobData(),
-                ['title' => 'The title must have less than 51 characters'],
-            ],
         ];
     }
 
@@ -231,42 +250,6 @@ class JobControllerTest extends AbstractControllerTest
         return $this->fetchExistingJob()['id'];
     }
 
-    public function provideSearchParameters(): array
-    {
-        return [
-            'no parameters' => [[], null, null, 2],
-            'limit 0' => [['limit' => 0], null, null, 0],
-            'limit 1' => [['limit' => 1], null, null, 1],
-            'limit 1 offset 100' => [['limit' => 1, 'offset' => 100], null, null, 0],
-            'zipcode' => [
-                ['zipcodeId' => ZipcodeFixtures::EXISTING_ZIPCODE_ID_1],
-                null,
-                ZipcodeFixtures::EXISTING_ZIPCODE_ID_1,
-                1,
-            ],
-            'category' => [
-                ['categoryId' => JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1],
-                JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1,
-                null,
-                1,
-            ],
-        ];
-    }
-
-    private function assertErrors(array $expectedErrors): void
-    {
-        $responseContent = $this->client->getResponse()->getContent();
-
-        $responseData = json_decode($responseContent, true);
-        $responseDataErrors = $responseData['errors'] ?? [];
-        $this->assertArraySubset(
-            $expectedErrors,
-            $responseDataErrors,
-            true,
-            sprintf('Actual errors: %s', json_encode($responseDataErrors))
-        );
-    }
-
     private function assertJobsCount(int $jobsCount): void
     {
         $responseContent = $this->client->getResponse()->getContent();
@@ -275,7 +258,7 @@ class JobControllerTest extends AbstractControllerTest
         $this->assertCount($jobsCount, $responseData);
     }
 
-    private function assertJobsCategory(?int $categoryId): void
+    private function assertJobCategory(?int $categoryId): void
     {
         if (null === $categoryId) {
             return;
@@ -289,7 +272,7 @@ class JobControllerTest extends AbstractControllerTest
         }
     }
 
-    private function assertJobsZipcode(?int $zipcodeId): void
+    private function assertZipcode(?string $zipcodeId): void
     {
         if (null === $zipcodeId) {
             return;

@@ -15,9 +15,9 @@ class UpdateJobRequest implements EntityAwareInterface
     /**
      * @JMS\Type("integer")
      * @JMS\SerializedName("categoryId")
-     * @Assert\NotBlank(message="Job category should not be blank")
+     * @Assert\NotBlank(message="The categoryId should not be blank.")
      * @AppBundle\Services\Validator\EntityExistsConstraint(
-     *     name="Job category",
+     *     name="The category",
      *     entityClassName="AppBundle\Entity\JobCategory",
      *     exists=true
      * )
@@ -26,21 +26,21 @@ class UpdateJobRequest implements EntityAwareInterface
     private $categoryId;
 
     /**
-     * @JMS\Type("integer")
+     * @JMS\Type("string")
      * @JMS\SerializedName("zipcodeId")
      * @Assert\Length(
      *      min = 5,
      *      max = 5,
-     *      minMessage = "The zipcodeId must have exactly 5 characters",
-     *      maxMessage = "The zipcodeId must have exactly 5 characters"
+     *      minMessage = "The zipcodeId must have exactly 5 characters.",
+     *      maxMessage = "The zipcodeId must have exactly 5 characters."
      * )
-     * @Assert\NotBlank(message="Zipcode should not be blank")
+     * @Assert\NotBlank(message="The zipcodeId should not be blank.")
      * @AppBundle\Services\Validator\EntityExistsConstraint(
-     *     name="Zipcode",
+     *     name="The zipcode",
      *     entityClassName="AppBundle\Entity\Zipcode",
      *     exists=true
      * )
-     * @var int
+     * @var string
      */
     private $zipcodeId;
 
@@ -50,10 +50,10 @@ class UpdateJobRequest implements EntityAwareInterface
      * @Assert\Length(
      *      min = 5,
      *      max = 50,
-     *      minMessage = "The title must have more than 4 characters",
-     *      maxMessage = "The title must have less than 51 characters"
+     *      minMessage = "The title must have more than 4 characters.",
+     *      maxMessage = "The title must have less than 51 characters."
      * )
-     * @Assert\NotBlank(message="Title should not be blank")
+     * @Assert\NotBlank(message="The title should not be blank.")
      * @var string
      */
     private $title;
@@ -68,7 +68,7 @@ class UpdateJobRequest implements EntityAwareInterface
     /**
      * @JMS\Type("DateTime<'Y-m-d'>")
      * @JMS\SerializedName("dateToBeDone")
-     * @Assert\Date()
+     * @Assert\Date(message="The {{ value }} is not a valid date.")
      * @var DateTimeInterface
      */
     private $dateToBeDone;
@@ -93,7 +93,7 @@ class UpdateJobRequest implements EntityAwareInterface
         return $this->categoryId;
     }
 
-    public function getZipcodeId(): int
+    public function getZipcodeId(): string
     {
         return $this->zipcodeId;
     }

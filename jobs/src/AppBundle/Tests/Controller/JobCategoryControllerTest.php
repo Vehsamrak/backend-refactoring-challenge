@@ -33,6 +33,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
         $this->client->request('GET', self::URL);
 
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
         $this->assertSame($expected, $this->client->getResponse()->getContent());
     }
 
@@ -46,6 +47,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
         $this->client->request('GET', sprintf('%s/%d', self::URL, JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1));
 
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
         $this->assertSame($expected, $this->client->getResponse()->getContent());
     }
 
@@ -57,15 +59,19 @@ class JobCategoryControllerTest extends AbstractControllerTest
         $this->client->request('GET', sprintf('%s/%d', self::URL, JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID));
 
         $this->assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
     }
 
     /**
      * @test
      * @dataProvider provideInvalidCategories
      * @param array $jobCategory
+     * @param array $expectedErrors
      */
-    public function postCategory_GivenAlreadyExistingCategory_BadRequestReturned(array $jobCategory): void
-    {
+    public function postCategory_GivenInvalidCategory_BadRequestReturned(
+        array $jobCategory,
+        array $expectedErrors
+    ): void {
         $this->client->request(
             'POST',
             self::URL,
@@ -76,6 +82,8 @@ class JobCategoryControllerTest extends AbstractControllerTest
         );
 
         $this->assertSame(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertErrors($expectedErrors);
     }
 
     /**
@@ -84,10 +92,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
     public function postCategory_GivenValidCategory_CreatedCategoryReturned(): void
     {
         $existingCategoriesCount = $this->countExistingCategories();
-        $jobCategory = [
-            'id' => JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID,
-            'name' => 'New Category',
-        ];
+        $jobCategory = $this->createValidJobCategoryData();
 
         $this->client->request(
             'POST',
@@ -99,6 +104,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
         );
 
         $this->assertSame(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
         $this->assertSame($existingCategoriesCount + 1, $this->countExistingCategories());
     }
 
@@ -106,28 +112,20 @@ class JobCategoryControllerTest extends AbstractControllerTest
     {
         return [
             'category already exists' => [
-                [
-                    'id' => JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1,
-                    'name' => JobCategoryFixtures::EXISTING_JOB_CATEGORY_NAME_1,
-                ],
+                ['id' => JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1] + $this->createValidJobCategoryData(),
+                ['id' => sprintf('The id "%s" already exists.', JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1)],
             ],
             'empty name' => [
-                [
-                    'id' => JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID,
-                    'name' => '',
-                ],
+                ['name' => ''] + $this->createValidJobCategoryData(),
+                ['name' => 'The name should not be blank.'],
             ],
             'name is least 5 characters' => [
-                [
-                    'id' => JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID,
-                    'name' => $this->createStringWithLength(4),
-                ],
+                ['name' => $this->createStringWithLength(4)] + $this->createValidJobCategoryData(),
+                ['name' => 'The name must have at least 5 characters.'],
             ],
             'name is greater then 255 characters' => [
-                [
-                    'id' => JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID,
-                    'name' => $this->createStringWithLength(256),
-                ],
+                ['name' => $this->createStringWithLength(256)] + $this->createValidJobCategoryData(),
+                ['name' => 'The name must have less than 256 characters.'],
             ],
         ];
     }
@@ -140,8 +138,11 @@ class JobCategoryControllerTest extends AbstractControllerTest
         return count($jobs);
     }
 
-    private function createStringWithLength(int $int): string
+    private function createValidJobCategoryData(): array
     {
-        return str_repeat('x', $int);
+        return [
+            'id' => JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID,
+            'name' => JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_NAME,
+        ];
     }
 }

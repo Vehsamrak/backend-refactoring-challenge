@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Zipcode;
+use AppBundle\Dto;
 use AppBundle\Repository\ZipcodeRepository;
 use AppBundle\Services\EntityFactory\AbstractEntityFactory;
 use AppBundle\Services\EntityUpdater\AbstractEntityUpdater;
@@ -44,11 +44,11 @@ class ZipcodeController extends AbstractController
 
     /**
      * @Rest\Get("/zipcode/{id}")
-     * @param int $id
+     * @param string $id
      * @return Response
      * @throws NotFoundHttpException
      */
-    public function getAction(int $id): Response
+    public function getAction(string $id): Response
     {
         // TODO[petr]: use integer instead of string
         $entity = $this->zipcodeRepository->findById($id);
@@ -68,6 +68,6 @@ class ZipcodeController extends AbstractController
      */
     public function postAction(Request $request): Response
     {
-        return $this->validateAndCreate($request->getContent(), Zipcode::class);
+        return $this->validateAndCreate($request->getContent(), Dto\UpdateZipcodeRequest::class);
     }
 }

@@ -18,6 +18,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Job implements EntityInterface, \JsonSerializable
 {
+    private const DATE_FORMAT = 'Y-m-d';
+
     /**
      * @ORM\Id()
      * @ORM\Column(name="id", type="guid", nullable=false)
@@ -159,8 +161,8 @@ class Job implements EntityInterface, \JsonSerializable
             'zipcodeId' => $this->zipcode->getId(),
             'title' => $this->title,
             'description' => $this->description,
-            'dateToBeDone' => $this->dateToBeDone->format('Y-m-d'),
-            'createdAt' => $this->createdAt->format('Y-m-d'),
+            'dateToBeDone' => $this->dateToBeDone->format(self::DATE_FORMAT),
+            'createdAt' => $this->createdAt->format(self::DATE_FORMAT),
         ];
     }
 }

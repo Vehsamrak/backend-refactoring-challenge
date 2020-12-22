@@ -14,9 +14,9 @@ class UpdateJobCategoryRequest implements EntityAwareInterface
     /**
      * @JMS\Type("integer")
      * @JMS\SerializedName("id")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="The id should not be blank.")
      * @AppBundle\Services\Validator\EntityExistsConstraint(
-     *     name="Job category",
+     *     name="The id",
      *     entityClassName="AppBundle\Entity\JobCategory",
      *     exists=false
      * )
@@ -29,10 +29,10 @@ class UpdateJobCategoryRequest implements EntityAwareInterface
      * @Assert\Length(
      *      min = 5,
      *      max = 255,
-     *      minMessage = "The name must have at least 5 characters",
-     *      maxMessage = "The name must have less than 256 characters"
+     *      minMessage = "The name must have at least 5 characters.",
+     *      maxMessage = "The name must have less than 256 characters."
      * )
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="The name should not be blank.")
      */
     private $name;
 

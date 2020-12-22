@@ -39,6 +39,25 @@ abstract class AbstractControllerTest extends WebTestCase
         $this->client = self::createClient();
     }
 
+    protected function createStringWithLength(int $int): string
+    {
+        return str_repeat('x', $int);
+    }
+
+    protected function assertErrors(array $expectedErrors): void
+    {
+        $responseContent = $this->client->getResponse()->getContent();
+
+        $responseData = json_decode($responseContent, true);
+        $responseDataErrors = $responseData['errors'] ?? [];
+        $this->assertArraySubset(
+            $expectedErrors,
+            $responseDataErrors,
+            true,
+            sprintf('Actual errors: %s', json_encode($responseDataErrors))
+        );
+    }
+
     protected function loadJobCategoryFixtures(): void
     {
         $this->load(new JobCategoryFixtures());

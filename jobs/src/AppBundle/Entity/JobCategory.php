@@ -6,8 +6,6 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
-use Symfony\Component\Validator\Constraints as Assert;
-use JMS\Serializer\Annotation as JMS;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -21,23 +19,11 @@ class JobCategory implements EntityInterface, JsonSerializable
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(name="id", type="integer", unique=true, nullable=false)
-     * @JMS\Type("string")
-     * @JMS\SerializedName("id")
-     * @Assert\NotBlank(message="Job category id is mandatory")
      */
     private $id;
 
     /**
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
-     * @JMS\Type("string")
-     * @JMS\SerializedName("name")
-     * @Assert\Length(
-     *      min = 5,
-     *      max = 255,
-     *      minMessage = "Job category name must have at least {{ limit }} characters",
-     *      maxMessage = "Job category name must have less than {{ limit }} characters"
-     * )
-     * @Assert\NotBlank()
      */
     private $name;
 
@@ -47,18 +33,12 @@ class JobCategory implements EntityInterface, JsonSerializable
         $this->name = $name;
     }
 
-    /**
-     * @return int
-     */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }

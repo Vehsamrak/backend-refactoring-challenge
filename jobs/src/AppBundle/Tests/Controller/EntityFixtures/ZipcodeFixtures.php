@@ -10,12 +10,12 @@ use Doctrine\Persistence\ObjectManager;
 
 class ZipcodeFixtures extends Fixture
 {
-    // TODO[petr]: make ids integers
     public const EXISTING_ZIPCODE_ID_1 = '10115';
     public const EXISTING_ZIPCODE_ID_2 = '32457';
     public const UNEXISTING_ZIPCODE_ID = '12345';
     public const EXISTING_ZIPCODE_CITY_1 = 'Berlin';
     public const EXISTING_ZIPCODE_CITY_2 = 'Porta Westfalica';
+    public const UNEXISTING_ZIPCODE_CITY = 'Test region';
 
     /**
      * @inheritDoc

@@ -67,7 +67,6 @@ Hint, things like documentation, code cleanup, higher test coverage.
 
 ### In progress
 * Review all tests. Tests with AAA
-* Zipcode id was string, but behave like integer. Property and column type were changed to integer
 
 ### Done
 * [Critical] Remove symfony cache directories from git
@@ -87,7 +86,7 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Commented code removed from Repositories
 * Job entity validation moved to validator class. New custom validation constraint annotation implemented
 * New unit tests naming strtegy applies pattern: "methodUnderTest_GivenState_ExpectedResult". Try-catch block used in tests instead of @expectedException annotation, to achieve AAA-pattern.
-* Serialization used for entities creation, instead of arrays mapping. JMSSerializer is used for deserialization, while JsonSerializable interface is used for serialization, because native serialization is much faster (no library overhead) and simpler to use for client code (less code, no dependencies, json_encode support).
+* JMSSerializer is used for DTO deserialization, while JsonSerializable interface is used for Entities serialization, because native serialization is much faster (no library overhead) and simpler to use for client code (less code, no dependencies, json_encode support). Explicit jsonSerialize on entities to define API contract. It is fragile to depend on property names.
 * Builders removed. Requests are serialized into DTOs, validates and then goes to entity factories with explicit object mapping, instead of arrays usage.
 * Remove app/Resources with unused views.
 * [Critical] TargetEntity property in ORM\ManyToOne annotation in Job entity has typo. Fixed to valid related entity classname.
@@ -105,7 +104,8 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Strict types declaration in every php file
 * Deprecated XDebug parameters changed to new values in PHP Dockerfile
 * Configuration files cleaned up. Unused packages removed
-
+* Fixed wrong validation maxMessage in Zipcode "city".
+* Immutable datetime used in getters to prevent changing datetime object by reference.
 
 ### Could be done in future
 * Implementation of all CRUD methods for Job, JobCategory and Zipcode.

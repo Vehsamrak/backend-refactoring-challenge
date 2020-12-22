@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AppBundle\Tests\Controller;
 
+use AppBundle\Tests\Controller\EntityFixtures\ZipcodeFixtures;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -12,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ZipcodeControllerTest extends AbstractControllerTest
 {
     private const FIXTURE_PATH = __DIR__.'/ResponseFixtures/zipcodes.json';
+    private const URL = '/zipcode';
 
     public function setUp(): void
     {
@@ -22,71 +24,68 @@ class ZipcodeControllerTest extends AbstractControllerTest
     /**
      * @test
      */
-    public function getAllZipcodes(): void
+    public function getZipcode_GivenNoParameters_MustReturnAllZipcodes(): void
     {
-        $expected = file_get_contents(self::FIXTURE_PATH);
+        $expectedZipcodes = file_get_contents(self::FIXTURE_PATH);
 
-        $this->client->request('GET', '/zipcode');
+        $this->client->request('GET', self::URL);
 
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals($expected, $this->client->getResponse()->getContent());
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertSame($expectedZipcodes, $this->client->getResponse()->getContent());
     }
 
     /**
      * @test
      */
-    public function getOneZipcodeFound(): void
+    public function getZipcodeId_GivenExistingZipcode_ReturnsOneZipcode(): void
     {
-        $expected = '{"id":"01623","city":"Lommatzsch"}';
+        $expectedZipcode = [
+            'id' => ZipcodeFixtures::EXISTING_ZIPCODE_ID_1,
+            'city' => ZipcodeFixtures::EXISTING_ZIPCODE_CITY_1,
+        ];
+        $url = sprintf('%s/%s', self::URL, ZipcodeFixtures::EXISTING_ZIPCODE_ID_1);
 
-        $this->client->request('GET', '/zipcode/01623');
+        $this->client->request('GET', $url);
 
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals($expected, $this->client->getResponse()->getContent());
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertSame(json_encode($expectedZipcode), $this->client->getResponse()->getContent());
     }
 
     /**
      * @test
      */
-    public function getOneZipcodeNotFound(): void
+    public function getZipcodeId_GivenUnexistingZipcode_ReturnsNotFoundError(): void
     {
-        $this->client->request('GET', '/zipcode/1');
+        $url = sprintf('%s/%s', self::URL, ZipcodeFixtures::UNEXISTING_ZIPCODE_ID);
 
-        $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+        $this->client->request('GET', $url);
+
+        $this->assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
     }
 
     /**
      * @test
+     * @dataProvider provideInvalidZipcodes
+     * @param array $zipcode
+     * @param array $expectedErrors
      */
-    public function postZipcodeRepeatedReturnsBadRequest(): void
+    public function postZipcode_GivenInvalidZipcode_ReturnsBadRequest(array $zipcode, array $expectedErrors): void
     {
         $this->client->request(
             'POST',
-            '/zipcode',
+            self::URL,
             [],
             [],
             ['CONTENT-TYPE' => 'application/json'],
-            '{"id": "01623", "city": "Lommatzsch"}'
+            json_encode($zipcode)
         );
 
-        $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
-    }
-
-    /**
-     * @test
-     */
-    public function postInvalidZipcodeReturnsBadRequest(): void
-    {
-        $this->client->request(
-            'POST',
-            '/zipcode',
-            [],
-            [],
-            ['CONTENT-TYPE' => 'application/json'],
-            '{"id": "123", "city": ""}'
-        );
-
-        $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertErrors($expectedErrors);
     }
 
     /**
@@ -94,24 +93,67 @@ class ZipcodeControllerTest extends AbstractControllerTest
      */
     public function postValidZipcodeReturnsCreated(): void
     {
+        $existingZipcodes = $this->countExistingZipcodes();
+        $zipcode = $this->createValidZipcodeData();
+
         $this->client->request(
             'POST',
-            '/zipcode',
+            self::URL,
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            '{"id": "12345", "city": "Valid city"}'
+            json_encode($zipcode)
         );
 
-        $this->assertEquals(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
+        $this->assertJson($this->client->getResponse()->getContent());
+        $this->assertSame($existingZipcodes + 1, $this->countExistingZipcodes());
     }
 
-    // TODO[petr]: test validation scenarios
     public function provideInvalidZipcodes(): array
     {
         return [
-            'city: The city must have at least 5 characters' => [],
-            'id: This value should have exactly 5 characters.' => [],
+            'zipcode already exist' => [
+                ['id' => ZipcodeFixtures::EXISTING_ZIPCODE_ID_1] + $this->createValidZipcodeData(),
+                ['id' => sprintf('The id "%s" already exists.', ZipcodeFixtures::EXISTING_ZIPCODE_ID_1)],
+            ],
+            'empty id' => [
+                ['id' => null] + $this->createValidZipcodeData(),
+                ['id' => 'The id should not be blank.'],
+            ],
+            'id minimum 5 characters' => [
+                ['id' => $this->createStringWithLength(4)] + $this->createValidZipcodeData(),
+                ['id' => 'This value should have exactly 5 characters.'],
+            ],
+            'id maximum 5 characters' => [
+                ['id' => $this->createStringWithLength(6)] + $this->createValidZipcodeData(),
+                ['id' => 'This value should have exactly 5 characters.'],
+            ],
+            'empty city' => [
+                ['city' => null] + $this->createValidZipcodeData(),
+                ['city' => 'The city should not be blank.'],
+            ],
+            'city minimum 3 characters' => [
+                ['city' => $this->createStringWithLength(2)] + $this->createValidZipcodeData(),
+                ['city' => 'The city must have at least 3 characters.'],
+            ],
+            'city maximum 50 characters' => [
+                ['city' => $this->createStringWithLength(51)] + $this->createValidZipcodeData(),
+                ['city' => 'The city must have less than 51 characters.'],
+            ],
         ];
+    }
+
+    private function createValidZipcodeData(): array
+    {
+        return ['id' => ZipcodeFixtures::UNEXISTING_ZIPCODE_ID, 'city' => ZipcodeFixtures::UNEXISTING_ZIPCODE_CITY];
+    }
+
+    private function countExistingZipcodes(): int
+    {
+        $this->client->request('GET', self::URL);
+        $jobs = json_decode($this->client->getResponse()->getContent(), true);
+
+        return count($jobs);
     }
 }

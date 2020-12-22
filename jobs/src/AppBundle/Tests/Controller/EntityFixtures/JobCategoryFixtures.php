@@ -15,6 +15,7 @@ class JobCategoryFixtures extends Fixture
     public const UNEXISTING_JOB_CATEGORY_ID = 12345;
     public const EXISTING_JOB_CATEGORY_NAME_1 = 'Sonstige Umzugsleistungen';
     public const EXISTING_JOB_CATEGORY_NAME_2 = 'Abtransport, Entsorgung und Entrümpelung';
+    public const UNEXISTING_JOB_CATEGORY_NAME = 'New Category';
 
     /**
      * @inheritDoc
