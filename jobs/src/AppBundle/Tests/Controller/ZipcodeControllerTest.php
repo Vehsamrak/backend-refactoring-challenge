@@ -31,7 +31,7 @@ class ZipcodeControllerTest extends AbstractControllerTest
         $this->requestGet(self::URL);
 
         $this->assertResponseCode(Response::HTTP_OK);
-        $this->assertSame($expectedZipcodes, $this->getResponseContents());
+        $this->assertSame($expectedZipcodes, $this->getResponseContent());
     }
 
     /**
@@ -48,7 +48,7 @@ class ZipcodeControllerTest extends AbstractControllerTest
         $this->requestGet($url);
 
         $this->assertResponseCode(Response::HTTP_OK);
-        $this->assertSame(json_encode($expectedZipcode), $this->getResponseContents());
+        $this->assertSame(json_encode($expectedZipcode), $this->getResponseContent());
     }
 
     /**
@@ -133,7 +133,7 @@ class ZipcodeControllerTest extends AbstractControllerTest
     private function countExistingZipcodes(): int
     {
         $this->requestGet(self::URL);
-        $jobs = json_decode($this->getResponseContents(), true);
+        $jobs = json_decode($this->getResponseContent(), true);
 
         return count($jobs);
     }

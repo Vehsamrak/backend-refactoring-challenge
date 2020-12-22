@@ -48,7 +48,7 @@ abstract class AbstractControllerTest extends WebTestCase
 
     protected function assertErrors(array $expectedErrors): void
     {
-        $responseContent = $this->client->getResponse()->getContent();
+        $responseContent = $this->getResponseContent();
 
         $responseData = json_decode($responseContent, true);
         $responseDataErrors = $responseData['errors'] ?? [];
@@ -100,7 +100,7 @@ abstract class AbstractControllerTest extends WebTestCase
         $this->client->request('PUT', $url, [], [], self::CONTENT_TYPE_JSON, json_encode($parameters));
     }
 
-    protected function getResponseContents(): string
+    protected function getResponseContent(): string
     {
         $response = $this->client->getResponse()->getContent();
         $this->assertJson($response);

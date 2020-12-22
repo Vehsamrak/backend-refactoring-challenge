@@ -204,7 +204,7 @@ class JobControllerTest extends AbstractControllerTest
             $this->requestGet(sprintf('%s/%s', self::URL, $id));
         }
 
-        $jobs = json_decode($this->getResponseContents(), true);
+        $jobs = json_decode($this->getResponseContent(), true);
 
         return $jobs[0] ?? $jobs;
     }
@@ -217,14 +217,14 @@ class JobControllerTest extends AbstractControllerTest
     private function countExistingJobs(): int
     {
         $this->requestGet(self::URL);
-        $jobs = json_decode($this->getResponseContents(), true);
+        $jobs = json_decode($this->getResponseContent(), true);
 
         return count($jobs);
     }
 
     private function assertJobsCount(int $jobsCount): void
     {
-        $responseContent = $this->getResponseContents();
+        $responseContent = $this->getResponseContent();
         $responseData = json_decode($responseContent, true);
 
         $this->assertCount($jobsCount, $responseData);
@@ -236,7 +236,7 @@ class JobControllerTest extends AbstractControllerTest
             return;
         }
 
-        $responseContent = $this->getResponseContents();
+        $responseContent = $this->getResponseContent();
         $responseData = json_decode($responseContent, true);
 
         foreach ($responseData as $job) {
@@ -250,7 +250,7 @@ class JobControllerTest extends AbstractControllerTest
             return;
         }
 
-        $responseContent = $this->getResponseContents();
+        $responseContent = $this->getResponseContent();
         $responseData = json_decode($responseContent, true);
 
         foreach ($responseData as $job) {

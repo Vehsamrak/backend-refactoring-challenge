@@ -33,7 +33,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
         $this->requestGet(self::URL);
 
         $this->assertResponseCode(Response::HTTP_OK);
-        $this->assertSame($expected, $this->getResponseContents());
+        $this->assertSame($expected, $this->getResponseContent());
     }
 
     /**
@@ -47,7 +47,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
         $this->requestGet($url);
 
         $this->assertResponseCode(Response::HTTP_OK);
-        $this->assertSame($expected, $this->getResponseContents());
+        $this->assertSame($expected, $this->getResponseContent());
     }
 
     /**
@@ -117,7 +117,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
     private function countExistingCategories(): int
     {
         $this->requestGet(self::URL);
-        $jobs = json_decode($this->getResponseContents(), true);
+        $jobs = json_decode($this->getResponseContent(), true);
 
         return count($jobs);
     }
