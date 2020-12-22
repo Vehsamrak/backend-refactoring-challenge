@@ -12,11 +12,6 @@ You should review and refactor this project, so it matches your criteria for goo
 Feel free to change anything you want.
 Please write a small documentation where you explain what you have changed and why you think your refactored code is better than the original code.
 
-## Results
-If you are finished, please create a .zip archive with your name as filename and upload it here:
-https://www.dropbox.com/request/H5TZGaVAcaR0WZntIfiQ  
-The archive should contain the complete project including the .git folder but you can leave out the /vendor/ directory to keep it small.
-
 ## Expectations
 During our review we will go through your refactoring in order to check if expected changes have been made. The expected changes are defined according to industry code quality standards and on best practices. In order to help you a bit we have defined how much findings and refactoring actions we expect at least, following are the actions required prioritized by criticality.
 
