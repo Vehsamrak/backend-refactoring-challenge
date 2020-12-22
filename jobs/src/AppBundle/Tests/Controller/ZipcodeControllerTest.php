@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ZipcodeControllerTest extends AbstractControllerTest
 {
-    private const FIXTURE_PATH = __DIR__.'/ResponseFixtures/zipcodes.json';
+    private const FIXTURE_PATH = __DIR__.'/responseFixtures/zipcodes.json';
     private const URL = '/zipcode';
 
     public function setUp(): void

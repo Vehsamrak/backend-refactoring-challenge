@@ -54,21 +54,16 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Remove all TODOs
 * Create an errorMessageHandler
 * Use custom exceptions
-* Move services configuration inside bundle
 * Swagger API documentation
 * [Critical] Wrap exceptions. Uncaught PHP Exception (NotFoundHttpException)
 * Fix phpdocs everywhere
-* Declare return and argument types everywhere
-* [Internal] Check if post action works on initial project before changes
-* [Internal] Check all API routes in api.http (after tests)
-* Property names in entities formatted to camelCase, to follow PSR-1 (consistency with properties in other classes).
 * Run migrations on test database
 * Export mysql configuration outside docker image
 
 ### In progress
-* Review all tests. Tests with AAA
 
 ### Done
+* Declare return and argument types everywhere
 * [Critical] Remove symfony cache directories from git
 * Cache and logs moved to projects "var" directory to follow the principle of least surprise
 * [Critical] Tests ServiceControllerTest::getOneServiceFound() and ServiceControllerTest::getOneServiceNotFound() are failed because undefined variable error in \AppBundle\Controller\ServiceController::getAction()
@@ -106,6 +101,9 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Configuration files cleaned up. Unused packages removed
 * Fixed wrong validation maxMessage in Zipcode "city".
 * Immutable datetime used in getters to prevent changing datetime object by reference.
+* Review all tests. Tests with AAA
+* Property names in entities formatted to camelCase, to follow PSR-1 (consistency with properties in other classes).
+* Move services configuration inside bundle
 
 ### Could be done in future
 * Implementation of all CRUD methods for Job, JobCategory and Zipcode.

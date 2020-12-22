@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class JobCategoryControllerTest extends AbstractControllerTest
 {
-    private const FIXTURE_PATH = __DIR__.'/ResponseFixtures';
+    private const FIXTURE_PATH = __DIR__.'/responseFixtures';
     private const FIXTURE_PATH_ALL_CATEGORIES = self::FIXTURE_PATH.'/allJobCategories.json';
     private const FIXTURE_PATH_ONE_CATEGORY = self::FIXTURE_PATH.'/oneJobCategory.json';
     private const URL = '/category';
