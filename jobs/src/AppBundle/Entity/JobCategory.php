@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
@@ -13,7 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="job_category")
  * @UniqueEntity(fields="id", message="Resource with provided ID already exists")
  */
-class JobCategory implements EntityInterface, JsonSerializable
+class JobCategory implements EntityInterface, \JsonSerializable
 {
     /**
      * @ORM\Id()
@@ -43,9 +42,6 @@ class JobCategory implements EntityInterface, JsonSerializable
         return $this->name;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function jsonSerialize(): array
     {
         return [

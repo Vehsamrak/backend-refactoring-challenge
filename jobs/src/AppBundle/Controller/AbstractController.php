@@ -50,6 +50,7 @@ abstract class AbstractController
      * @param string $searchParametersClassname
      * @return JsonResponse
      * @throws ClassNotFoundException
+     * @throws InterfaceException
      */
     protected function validateAndSearch(array $searchParametersData, string $searchParametersClassname): JsonResponse
     {
@@ -87,6 +88,8 @@ abstract class AbstractController
      * @param string          $entityAwareClassName
      * @param string|int|null $entityId
      * @return JsonResponse
+     * @throws ClassNotFoundException
+     * @throws InterfaceException
      */
     protected function validateAndUpsert(
         string $entityDataJson,
@@ -118,25 +121,40 @@ abstract class AbstractController
         return new JsonResponse($entity, $returnCode);
     }
 
+    /**
+     * @param string $entityAwareClassName
+     * @throws ClassNotFoundException
+     * @throws InterfaceException
+     */
     private function checkEntityAwareClass(string $entityAwareClassName): void
     {
-        if (!class_exists($entityAwareClassName)) {
-            throw new ClassNotFoundException($entityAwareClassName);
-        }
-
-        if (!in_array(EntityAwareInterface::class, class_implements($entityAwareClassName), true)) {
-            throw new InterfaceException($entityAwareClassName, EntityAwareInterface::class);
-        }
+        $this->checkInstanceOf($entityAwareClassName, EntityAwareInterface::class);
     }
 
+    /**
+     * @param string $className
+     * @throws ClassNotFoundException
+     * @throws InterfaceException
+     */
     private function checkSearchParameters(string $className): void
+    {
+        $this->checkInstanceOf($className, SearchParametersInterface::class);
+    }
+
+    /**
+     * @param string $className
+     * @param string $interfaceName
+     * @throws ClassNotFoundException
+     * @throws InterfaceException
+     */
+    private function checkInstanceOf(string $className, string $interfaceName): void
     {
         if (!class_exists($className)) {
             throw new ClassNotFoundException($className);
         }
 
-        if (!in_array(SearchParametersInterface::class, class_implements($className), true)) {
-            throw new InterfaceException($className, SearchParametersInterface::class);
+        if (!in_array($interfaceName, class_implements($className), true)) {
+            throw new InterfaceException($className, $interfaceName);
         }
     }
 }

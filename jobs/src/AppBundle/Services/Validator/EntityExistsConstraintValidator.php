@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace AppBundle\Services\Validator;
 
 use AppBundle\Entity\EntityInterface;
-use AppBundle\Exception\ClassNotFoundException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 use Symfony\Component\Validator\Constraint;
@@ -36,13 +35,6 @@ class EntityExistsConstraintValidator extends ConstraintValidator
         }
 
         $entityClassName = $constraint->entityClassName;
-        if (null === $entityClassName) {
-            throw new UnexpectedTypeException($entityClassName, EntityInterface::class);
-        }
-
-        if (!class_exists($entityClassName)) {
-            throw new ClassNotFoundException($entityClassName);
-        }
 
         if (!$this->isEntity($entityClassName)) {
             throw new UnexpectedTypeException($entityClassName, EntityInterface::class);
@@ -66,8 +58,12 @@ class EntityExistsConstraintValidator extends ConstraintValidator
         }
     }
 
-    private function isEntity(string $entityClassName): bool
+    private function isEntity(?string $entityClassName): bool
     {
+        if (!class_exists((string) $entityClassName)) {
+        	return false;
+        }
+
         return in_array(EntityInterface::class, class_implements($entityClassName), true);
     }
 

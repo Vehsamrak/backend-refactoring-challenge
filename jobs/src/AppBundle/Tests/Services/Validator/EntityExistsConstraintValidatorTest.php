@@ -5,20 +5,17 @@ declare(strict_types=1);
 namespace AppBundle\Tests\Services\Validator;
 
 use AppBundle\Entity\EntityInterface;
-use AppBundle\Exception\ClassNotFoundException;
 use AppBundle\Services\Validator\EntityExistsConstraint;
 use AppBundle\Services\Validator\EntityExistsConstraintValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidatorInterface;
 use Symfony\Component\Validator\Context\ExecutionContext;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Throwable;
 
 /**
  * @group unit
@@ -65,7 +62,7 @@ class EntityExistsConstraintValidatorTest extends TestCase
 
         try {
             $validator->validate($validValue, $constraint);
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
         }
 
         $this->assertException($expectedExceptionClassName, $exception);
@@ -87,7 +84,7 @@ class EntityExistsConstraintValidatorTest extends TestCase
 
         return [
             'entity class is null. Throws exception' => [null, UnexpectedTypeException::class],
-            'entity class not found. Throws exception' => ['', ClassNotFoundException::class],
+            'entity class not found. Throws exception' => ['', UnexpectedTypeException::class],
             'entity class is not entity. Throws exception' => [self::class, UnexpectedTypeException::class],
             'entity class is entity. No exceptions expected' => [get_class($entity), null],
         ];
@@ -95,7 +92,7 @@ class EntityExistsConstraintValidatorTest extends TestCase
 
     private function createValidator(): ConstraintValidatorInterface
     {
-        /** @var EntityManagerInterface|PHPUnit_Framework_MockObject_MockObject $entityManager */
+        /** @var EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject $entityManager */
         $entityManager = $this->createConfiguredMock(
             EntityManagerInterface::class,
             ['getRepository' => $this->createRepository()]
@@ -130,10 +127,10 @@ class EntityExistsConstraintValidatorTest extends TestCase
 
     private function createRepository(): ObjectRepository
     {
-        /** @var EntityInterface|PHPUnit_Framework_MockObject_MockObject $entity */
+        /** @var EntityInterface|\PHPUnit_Framework_MockObject_MockObject $entity */
         $entity = $this->createMock(EntityInterface::class);
 
-        /** @var ObjectRepository|PHPUnit_Framework_MockObject_MockObject $repository */
+        /** @var ObjectRepository|\PHPUnit_Framework_MockObject_MockObject $repository */
         $repository = $this->createMock(ObjectRepository::class);
         $repositoryCallback = static function ($id) use ($entity): ?EntityInterface {
             if (self::ENTITY_EXISTING_ID === $id) {
@@ -150,7 +147,11 @@ class EntityExistsConstraintValidatorTest extends TestCase
         return $repository;
     }
 
-    private function assertException(?string $expectedExceptionClassName, ?Throwable $exception): void
+    /**
+     * @param string|null     $expectedExceptionClassName
+     * @param \Throwable|null $exception
+     */
+    private function assertException(?string $expectedExceptionClassName, ?\Throwable $exception): void
     {
         if (null === $expectedExceptionClassName) {
             $this->assertNull($exception);

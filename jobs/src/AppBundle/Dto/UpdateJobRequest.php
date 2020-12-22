@@ -6,7 +6,6 @@ namespace AppBundle\Dto;
 
 use AppBundle\Entity\Job;
 use AppBundle\Services\EntityFactory\EntityAwareInterface;
-use DateTimeInterface;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -69,7 +68,7 @@ class UpdateJobRequest implements EntityAwareInterface
      * @JMS\Type("DateTime<'Y-m-d'>")
      * @JMS\SerializedName("dateToBeDone")
      * @Assert\Date(message="The {{ value }} is not a valid date.")
-     * @var DateTimeInterface
+     * @var \DateTimeInterface
      */
     private $dateToBeDone;
 
@@ -78,7 +77,7 @@ class UpdateJobRequest implements EntityAwareInterface
         int $categoryId,
         string $zipcodeId,
         string $title,
-        DateTimeInterface $dateToBeDone,
+        \DateTimeInterface $dateToBeDone,
         ?string $description = null
     ) {
         $this->categoryId = $categoryId;

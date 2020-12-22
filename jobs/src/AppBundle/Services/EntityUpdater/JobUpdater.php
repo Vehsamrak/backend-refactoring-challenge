@@ -8,6 +8,7 @@ use AppBundle\Dto;
 use AppBundle\Entity\EntityInterface;
 use AppBundle\Entity\Job;
 use AppBundle\Exception\EntityNotFoundException;
+use AppBundle\Exception\InvalidArgumentException;
 use AppBundle\Exception\InvalidEntityException;
 use AppBundle\Repository\JobCategoryRepository;
 use AppBundle\Repository\JobRepository;
@@ -43,6 +44,10 @@ class JobUpdater implements EntityUpdaterInterface
     {
         if (!$entityAware instanceof Dto\UpdateJobRequest) {
             throw new InvalidEntityException($entityAware);
+        }
+
+        if (!is_string($entityId)) {
+            throw new InvalidArgumentException('Entity id must be string');
         }
 
         $job = $this->jobRepository->findById($entityId);

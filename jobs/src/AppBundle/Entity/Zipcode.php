@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ZipcodeRepository")
  */
-class Zipcode implements EntityInterface, JsonSerializable
+class Zipcode implements EntityInterface, \JsonSerializable
 {
     /**
      * @ORM\Id()
@@ -40,9 +39,6 @@ class Zipcode implements EntityInterface, JsonSerializable
         return $this->city;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function jsonSerialize(): array
     {
         return [

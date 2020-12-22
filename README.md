@@ -1,3 +1,5 @@
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Vehsamrak/backend-refactoring-challenge/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Vehsamrak/backend-refactoring-challenge/?branch=master)
+
 ## Background
 This project provides some API endpoints to create a job. The actual endpoint to save the job is POST /jobs, 
 while the other endpoints are providing some additional functionality that clients may need.
@@ -46,7 +48,6 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Use scrutinizer CI
 * Test coverage 100%
 * write a small documentation where you explain what you have changed and why you think your refactored code is better than the original code.
-* Remove all TODOs
 * Create an errorMessageHandler
 * Use custom exceptions
 * Swagger API documentation
@@ -58,10 +59,13 @@ Hint, things like documentation, code cleanup, higher test coverage.
 ### In progress
 
 ### Done
-* Declare return and argument types everywhere
-* [Critical] Remove symfony cache directories from git
-* Cache and logs moved to projects "var" directory to follow the principle of least surprise
+* [Critical] Symfony cache directories removed from git.
 * [Critical] Tests ServiceControllerTest::getOneServiceFound() and ServiceControllerTest::getOneServiceNotFound() are failed because undefined variable error in \AppBundle\Controller\ServiceController::getAction()
+* [Critical] TargetEntity property in ORM\ManyToOne annotation in Job entity has typo. Fixed to valid related entity classname.
+* [Critical] Fixed @ORM\JoinColumn annotation in Job entity related to zipcode points to wrong field (category_id).
+* All TODOs removed from project.
+* Return and argument types declared everywhere.
+* Cache and logs moved to projects "var" directory to follow the principle of least surprise
 * Test ZipcodeControllerTest::getOneZipcodeNotFound() failed due to wrong http code assertion
 * Package "roave/securityadvisories" added to dependencies, to ensure application doesn't have installed dependencies with known security vulnerabilities.
 * Move tests inside bundle
@@ -79,7 +83,6 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * JMSSerializer is used for DTO deserialization, while JsonSerializable interface is used for Entities serialization, because native serialization is much faster (no library overhead) and simpler to use for client code (less code, no dependencies, json_encode support). Explicit jsonSerialize on entities to define API contract. It is fragile to depend on property names.
 * Builders removed. Requests are serialized into DTOs, validates and then goes to entity factories with explicit object mapping, instead of arrays usage.
 * Remove app/Resources with unused views.
-* [Critical] TargetEntity property in ORM\ManyToOne annotation in Job entity has typo. Fixed to valid related entity classname.
 * IDE specific ".idea" was removed from job directory gitignore. Templates for various editors and operating systems must be presented in global gitignore config, not on the project level. Root level .gitignore was truncated to reduce duplication.
 * Composer updated to 2.0. Cache volumes are stored correctly
 * Persist database volumes, so they shall not be deleted when containers stops
@@ -87,7 +90,6 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Job entity has annotation @ORM\GeneratedValue with UUID strategy, and therefore should not have id in constructor
 * Generate job entity uuid on backend instead of client or database. Custom IdGenerator generator created, because Doctrine generator uses database SELECT to create UUID. It is better for testing and performance to have generator on the application side.
 * SQL should be present only in repositories. Job service refactored to create SQL with query builder.
-* [Critical] Fixed @ORM\JoinColumn annotation in Job entity related to zipcode points to wrong field (category_id).
 * Validate DTOs
 * Get rid of static methods
 * Remove apache configuration files

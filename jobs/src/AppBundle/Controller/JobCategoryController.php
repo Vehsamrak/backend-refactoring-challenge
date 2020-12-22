@@ -6,6 +6,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\Dto\UpdateJobCategoryRequest;
 use AppBundle\Entity\JobCategory;
+use AppBundle\Exception\ClassNotFoundException;
+use AppBundle\Exception\InterfaceException;
 use AppBundle\Repository\JobCategoryRepository;
 use AppBundle\Services\EntityFactory\AbstractEntityFactory;
 use AppBundle\Services\EntityUpdater\AbstractEntityUpdater;
@@ -58,6 +60,8 @@ class JobCategoryController extends AbstractController
      * @Rest\Post("/category")
      * @param Request $request
      * @return Response
+     * @throws ClassNotFoundException
+     * @throws InterfaceException
      */
     public function postAction(Request $request): Response
     {

@@ -6,6 +6,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\Dto;
 use AppBundle\Entity\Job;
+use AppBundle\Exception\ClassNotFoundException;
+use AppBundle\Exception\InterfaceException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,6 +42,8 @@ class JobController extends AbstractController
      * @Rest\Post("/job")
      * @param Request $request
      * @return Response
+     * @throws ClassNotFoundException
+     * @throws InterfaceException
      */
     public function postAction(Request $request): Response
     {
@@ -52,6 +56,8 @@ class JobController extends AbstractController
      * @param Job     $job
      * @param Request $request
      * @return Response
+     * @throws ClassNotFoundException
+     * @throws InterfaceException
      */
     public function putAction(Job $job, Request $request): Response
     {

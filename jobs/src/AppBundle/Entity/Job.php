@@ -150,9 +150,6 @@ class Job implements EntityInterface, \JsonSerializable
         return new \DateTimeImmutable($dateTime->format(DATE_ATOM));
     }
 
-    /**
-     * @inheritDoc
-     */
     public function jsonSerialize(): array
     {
         return [

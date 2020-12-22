@@ -9,7 +9,6 @@ use AppBundle\Entity\JobCategory;
 use AppBundle\Entity\Zipcode;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use DateTime;
 
 class JobFixtures extends Fixture
 {
@@ -36,8 +35,8 @@ class JobFixtures extends Fixture
         $manager->persist($zipcode1);
         $manager->persist($zipcode2);
 
-        $manager->persist(new Job($jobCategory1, $zipcode1, 'first job', new DateTime('2018-11-11'), 'decription'));
-        $manager->persist(new Job($jobCategory2, $zipcode2, 'second job', new DateTime('2018-11-11'), 'decription'));
+        $manager->persist(new Job($jobCategory1, $zipcode1, 'first job', new \DateTime('2018-11-11'), 'decription'));
+        $manager->persist(new Job($jobCategory2, $zipcode2, 'second job', new \DateTime('2018-11-11'), 'decription'));
 
         $manager->flush();
     }

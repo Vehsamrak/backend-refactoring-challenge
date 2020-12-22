@@ -6,6 +6,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\Dto;
 use AppBundle\Entity\Zipcode;
+use AppBundle\Exception\ClassNotFoundException;
+use AppBundle\Exception\InterfaceException;
 use AppBundle\Repository\ZipcodeRepository;
 use AppBundle\Services\EntityFactory\AbstractEntityFactory;
 use AppBundle\Services\EntityUpdater\AbstractEntityUpdater;
@@ -58,6 +60,8 @@ class ZipcodeController extends AbstractController
      * @Rest\Post("/zipcode")
      * @param Request $request
      * @return Response
+     * @throws ClassNotFoundException
+     * @throws InterfaceException
      */
     public function postAction(Request $request): Response
     {

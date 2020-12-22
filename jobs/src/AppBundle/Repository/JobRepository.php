@@ -6,6 +6,7 @@ namespace AppBundle\Repository;
 
 use AppBundle\Dto;
 use AppBundle\Entity\Job;
+use AppBundle\Exception\InvalidArgumentException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -24,12 +25,13 @@ class JobRepository extends ServiceEntityRepository implements SearchRepositoryI
     /**
      * @param SearchParametersInterface $jobSearchParameters
      * @return Job[]
+     * @throws InvalidArgumentException
      * @throws \Exception
      */
     public function findAllByParameters(SearchParametersInterface $jobSearchParameters): array
     {
         if (!$jobSearchParameters instanceof Dto\SearchJobRequest) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(
                     'Search parameters "%s" must be instance of "%s"',
                     get_class($jobSearchParameters),
