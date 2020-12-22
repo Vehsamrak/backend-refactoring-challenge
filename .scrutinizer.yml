@@ -5,7 +5,11 @@ build:
   tests:
     override:
       -
-        command: jobs/vendor/bin/phpunit --coverage-clover=coverage.xml tests
+        command: pwd
+      -
+        command: ls
+      -
+        command: ./jobs/vendor/bin/phpunit --coverage-clover=coverage.xml tests
         coverage:
           file: coverage.xml
           format: php-clover
