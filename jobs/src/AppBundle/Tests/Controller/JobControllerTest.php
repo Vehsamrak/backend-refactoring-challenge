@@ -135,7 +135,7 @@ class JobControllerTest extends AbstractControllerTest
                 ['categoryId' => JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID] + $this->createValidJobData(),
                 [
                     'categoryId' => sprintf(
-                        'The category "%d" was not found.',
+                        'The category #%d was not found.',
                         JobCategoryFixtures::UNEXISTING_JOB_CATEGORY_ID
                     ),
                 ],
@@ -146,7 +146,7 @@ class JobControllerTest extends AbstractControllerTest
             ],
             'unexisting zipcode' => [
                 ['zipcodeId' => ZipcodeFixtures::UNEXISTING_ZIPCODE_ID] + $this->createValidJobData(),
-                ['zipcodeId' => sprintf('The zipcode "%d" was not found.', ZipcodeFixtures::UNEXISTING_ZIPCODE_ID)],
+                ['zipcodeId' => sprintf('The zipcode #%s was not found.', ZipcodeFixtures::UNEXISTING_ZIPCODE_ID)],
             ],
             'empty title' => [
                 ['title' => null] + $this->createValidJobData(),

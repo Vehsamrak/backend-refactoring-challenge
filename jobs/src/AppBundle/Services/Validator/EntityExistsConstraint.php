@@ -15,12 +15,12 @@ class EntityExistsConstraint extends Constraint
     /**
      * @var string
      */
-    public $messageFound = '{{ name }} "{{ value }}" already exists.';
+    public $messageFound = '{{ name }} #{{ value }} already exists.';
 
     /**
      * @var string
      */
-    public $messageNotFound = '{{ name }} "{{ value }}" was not found.';
+    public $messageNotFound = '{{ name }} #{{ value }} was not found.';
 
     /**
      * @var string

@@ -97,7 +97,7 @@ class JobCategoryControllerTest extends AbstractControllerTest
         return [
             'category already exists' => [
                 ['id' => JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1] + $this->createValidJobCategoryData(),
-                ['id' => sprintf('The id "%s" already exists.', JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1)],
+                ['id' => sprintf('The id #%s already exists.', JobCategoryFixtures::EXISTING_JOB_CATEGORY_ID_1)],
             ],
             'empty name' => [
                 ['name' => ''] + $this->createValidJobCategoryData(),

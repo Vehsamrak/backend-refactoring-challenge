@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\JobCategoryRepository")
  * @ORM\Table(name="job_category")
- * @UniqueEntity(fields="id", message="Resource with provided ID already exists")
  */
 class JobCategory implements EntityInterface, \JsonSerializable
 {

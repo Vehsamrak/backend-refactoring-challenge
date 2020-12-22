@@ -1,51 +1,18 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Vehsamrak/backend-refactoring-challenge/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Vehsamrak/backend-refactoring-challenge/?branch=master)
 
-## Background
-This project provides some API endpoints to create a job. The actual endpoint to save the job is POST /jobs, 
-while the other endpoints are providing some additional functionality that clients may need.
+## Api documentation
+Swagger API documentation can be found [here](documentation/api.yaml).
 
-A job represents a task or some job a consumer needs to be done by a tradesman/craftsman.
-It is something like "Paint my 60m2 flat" or "Fix the bathroom sink".
-Every job is categorized in a "Service". You can think of them like categories. eg: "Boat building & boat repair" or "Cleaning of gutters".
-Also every job needs some additional data like a description and when the job should be done.
-
-## The Task
-You should review and refactor this project, so it matches your criteria for good code and has a state that you're fine with. 
-Feel free to change anything you want.
-Please write a small documentation where you explain what you have changed and why you think your refactored code is better than the original code.
-
-## Expectations
-During our review we will go through your refactoring in order to check if expected changes have been made. The expected changes are defined according to industry code quality standards and on best practices. In order to help you a bit we have defined how much findings and refactoring actions we expect at least, following are the actions required prioritized by criticality.
-
-### Critical
-We expect at least 3 fixes that are critical issues
-
-### Medium
-Depending on your experience we will expect a certain number of findings here.
-Hint, make sure you consider coding principles and design patterns in your refactoring.
-There is a total of at least 4 to 7 findings here depending on your experience.
-
-### Lower
-This section is for less important changes but will give you bonus points, especially the more senior the role is the more we also expect to see here.
-Hint, things like documentation, code cleanup, higher test coverage.
-
-
-## Run the project
 ### Setup
 - `docker-compose up -d`
 - `docker run --rm --interactive --tty --volume $PWD/jobs:/app composer:2.0 install`
 - `docker-compose exec php bin/console doctrine:migrations:migrate`
 
-## Tests
+### Tests
 - `docker-compose exec php bin/console doctrine:database:create --env=test`
 - `docker-compose exec php vendor/bin/phpunit`
 
-### TODO
-* Swagger API documentation
-
-### In progress
-
-### Done
+## What was done
 * [Critical] Fixed tests ServiceControllerTest::getOneServiceFound() and ServiceControllerTest::getOneServiceNotFound(). They were failed because undefined variable error in \AppBundle\Controller\ServiceController::getAction().
 * [Critical] TargetEntity property in ORM\ManyToOne annotation in Job entity has typo. Fixed to valid related entity classname.
 * [Critical] Fixed @ORM\JoinColumn annotation in Job entity, it points to wrong field of Zipcode (category_id).
@@ -87,8 +54,9 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Property names in entities formatted to camelCase, to follow PSR-1 (consistency with properties in other classes).
 * Services configuration moved inside bundle.
 * Scrutinizer code quality inspection integrated.
+* Swagger API documentation declared.
 
-### Could be done in future
+## Could be done in the future
 * Implementation of all CRUD methods for Job, JobCategory and Zipcode.
 * Zipcodes are standartized and static, so no need to store them in database. Could be extracted to configuration.
 * Authentification and authorization for controller actions must be done.
@@ -101,3 +69,34 @@ Hint, things like documentation, code cleanup, higher test coverage.
 * Existing nginx image from docker registry could be used instead of creating new one.
 * Run migrations on test database.
 * Export mysql configuration outside docker image.
+
+---
+
+## Background
+This project provides some API endpoints to create a job. The actual endpoint to save the job is POST /jobs, 
+while the other endpoints are providing some additional functionality that clients may need.
+
+A job represents a task or some job a consumer needs to be done by a tradesman/craftsman.
+It is something like "Paint my 60m2 flat" or "Fix the bathroom sink".
+Every job is categorized in a "Service". You can think of them like categories. eg: "Boat building & boat repair" or "Cleaning of gutters".
+Also every job needs some additional data like a description and when the job should be done.
+
+## The Task
+You should review and refactor this project, so it matches your criteria for good code and has a state that you're fine with. 
+Feel free to change anything you want.
+Please write a small documentation where you explain what you have changed and why you think your refactored code is better than the original code.
+
+## Expectations
+During our review we will go through your refactoring in order to check if expected changes have been made. The expected changes are defined according to industry code quality standards and on best practices. In order to help you a bit we have defined how much findings and refactoring actions we expect at least, following are the actions required prioritized by criticality.
+
+### Critical
+We expect at least 3 fixes that are critical issues
+
+### Medium
+Depending on your experience we will expect a certain number of findings here.
+Hint, make sure you consider coding principles and design patterns in your refactoring.
+There is a total of at least 4 to 7 findings here depending on your experience.
+
+### Lower
+This section is for less important changes but will give you bonus points, especially the more senior the role is the more we also expect to see here.
+Hint, things like documentation, code cleanup, higher test coverage.

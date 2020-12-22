@@ -96,7 +96,7 @@ class ZipcodeControllerTest extends AbstractControllerTest
         return [
             'zipcode already exist' => [
                 ['id' => ZipcodeFixtures::EXISTING_ZIPCODE_ID_1] + $this->createValidZipcodeData(),
-                ['id' => sprintf('The id "%s" already exists.', ZipcodeFixtures::EXISTING_ZIPCODE_ID_1)],
+                ['id' => sprintf('The id #%s already exists.', ZipcodeFixtures::EXISTING_ZIPCODE_ID_1)],
             ],
             'empty id' => [
                 ['id' => null] + $this->createValidZipcodeData(),
