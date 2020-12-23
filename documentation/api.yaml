@@ -1,0 +1,415 @@
+openapi: "3.0.1"
+info:
+  title: "Job API"
+  description: "Backend refactoring challenge"
+  version: 1.0.0
+servers:
+  - url: "{urlSchema}://{hostname}:80"
+    variables:
+      hostname:
+        default: localhost
+      urlSchema:
+        default: http
+
+paths:
+  /job:
+    get:
+      summary: "Returns list of jobs (with search)"
+      description: >
+        Returns list of jobs by search parameters.
+        If parameters are empty, default limit 100 entities for last 30 days would be used
+      parameters:
+        - name: offset
+          in: query
+          description: "Pagination offset"
+          required: false
+          schema:
+            type: integer
+          example: 0
+        - name: limit
+          in: query
+          description: "Pagination limit"
+          required: false
+          schema:
+            type: integer
+          example: 100
+        - name: daysCount
+          in: query
+          description: "Days ago when jobs were created"
+          required: false
+          schema:
+            type: integer
+          example: 30
+        - name: categoryId
+          in: query
+          description: "Job category identifier"
+          required: false
+          schema:
+            type: integer
+        - name: zipcodeId
+          in: query
+          description: "Zipcode identifier"
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Job"
+        "400":
+          description: "Validation errors"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: "Create new job announcement"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateJobRequest"
+      responses:
+        "201":
+          description: "New job created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+        "400":
+          description: "Validation errors"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /job/{id}:
+    get:
+      summary: "Returns single job"
+      parameters:
+        - name: id
+          in: path
+          description: "Job identifier"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      summary: "Update existing job"
+      parameters:
+        - name: id
+          in: path
+          description: "Job identifier"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Job"
+      responses:
+        "200":
+          description: "Job updated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+        "400":
+          description: "Validation errors"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /zipcode:
+    get:
+      summary: "Returns list of zipcodes"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Zipcode"
+        "400":
+          description: "Validation errors"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: "Create new zipcode"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Zipcode"
+      responses:
+        "201":
+          description: "New zipcode created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Zipcode"
+        "400":
+          description: "Validation errors"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /zipcode/{id}:
+    get:
+      summary: "Returns single zipcode"
+      parameters:
+        - name: id
+          in: path
+          description: "Zipcode identifier"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Zipcode"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /category:
+    get:
+      summary: "Returns list of job categories"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/JobCategory"
+        "400":
+          description: "Validation errors"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: "Create new job category"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobCategory"
+      responses:
+        "201":
+          description: "New job category created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobCategory"
+        "400":
+          description: "Validation errors"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /category/{id}:
+    get:
+      summary: "Returns single job category"
+      parameters:
+        - name: id
+          in: path
+          description: "Job category identifier"
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobCategory"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    UpdateJobRequest:
+      properties:
+        categoryId:
+          type: integer
+          description: "Job category identifier"
+          example: 1
+        zipcodeId:
+          type: string
+          description: "Zipcode identifier"
+          minLength: 5
+          maxLength: 5
+          example: "12345"
+        title:
+          type: string
+          description: "Title of the job"
+          minLength: 5
+          maxLength: 50
+          example: "Fix the bathroom sink"
+        dateToBeDone:
+          type: string
+          format: date
+          description: "Date when the job would be done"
+          example: '2020-12-21'
+        description:
+          type: string
+          description: "Detailed description of the job"
+          example: "Best bathroom fixing. Sink guarantee!"
+      required:
+        - id
+        - categoryId
+        - zipcodeId
+        - title
+        - dateToBeDone
+
+    Job:
+      description: "A job represents a task or some job a consumer needs to be done by a tradesman/craftsman"
+      allOf:
+        - properties:
+            id:
+              type: string
+              format: uuid
+              description: "Job identifier"
+              example: "98fb876e-3fed-11eb-8a12-0242ac1d0003"
+            createdAt:
+              type: string
+              format: date
+              description: "Date when job announcement was created"
+              example: '2020-12-10'
+          required:
+            - id
+            - createdAt
+        - $ref: "#/components/schemas/UpdateJobRequest"
+
+    JobCategory:
+      description: "A job represents a task or some job a consumer needs to be done by a tradesman/craftsman"
+      properties:
+        id:
+          type: integer
+          description: "Job category identifier"
+          example: 2
+        name:
+          type: string
+          description: "Job category name"
+          minLength: 5
+          maxLength: 255
+          example: "Boat building & boat repair"
+      required:
+        - id
+        - name
+
+    Zipcode:
+      properties:
+        id:
+          type: string
+          description: Zipcode
+          minLength: 5
+          maxLength: 5
+          example: "10115"
+        city:
+          type: string
+          description: "Job category name"
+          minLength: 3
+          maxLength: 50
+          example: "Berlin"
+      required:
+        - id
+        - city
+
+    ErrorResponse:
+      properties:
+        errors:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            id: "The id should not be blank."
+            name: "The name should not be blank."
+      required:
+        - errors
