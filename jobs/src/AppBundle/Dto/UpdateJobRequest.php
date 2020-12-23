@@ -72,7 +72,6 @@ class UpdateJobRequest implements EntityAwareInterface
      */
     private $dateToBeDone;
 
-
     public function __construct(
         int $categoryId,
         string $zipcodeId,

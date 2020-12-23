@@ -29,9 +29,9 @@ class SearchJobRequest implements SearchParametersInterface
     private $categoryId;
 
     /**
-     * @JMS\Type("integer")
+     * @JMS\Type("string")
      * @JMS\SerializedName("zipcodeId")
-     * @var int
+     * @var string
      */
     private $zipcodeId;
 
@@ -52,7 +52,7 @@ class SearchJobRequest implements SearchParametersInterface
     public function __construct(
         int $daysCount = self::DEFAULT_DAYS_COUNT,
         ?int $categoryId = null,
-        ?int $zipcodeId = null,
+        ?string $zipcodeId = null,
         int $limit = self::DEFAULT_LIMIT,
         int $offset = self::DEFAULT_OFFSET
     ) {
@@ -73,7 +73,7 @@ class SearchJobRequest implements SearchParametersInterface
         return $this->categoryId;
     }
 
-    public function getZipcodeId(): ?int
+    public function getZipcodeId(): ?string
     {
         return $this->zipcodeId;
     }

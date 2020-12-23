@@ -1,7 +1,7 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Vehsamrak/backend-refactoring-challenge/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Vehsamrak/backend-refactoring-challenge/?branch=master)
 
 ## Api documentation
-Swagger API documentation can be found [here](documentation/api.yaml).
+OpenAPI documentation can be found [here](documentation/api.yaml).
 
 ### Setup
 - `docker-compose up -d`
@@ -56,6 +56,7 @@ Swagger API documentation can be found [here](documentation/api.yaml).
 * Services configuration moved inside bundle.
 * Scrutinizer code quality inspection integrated.
 * Swagger API documentation declared.
+* Job search functionality in "GET /job" with limit and offset.
 
 ## Could be done in the future
 * Implementation of all CRUD methods for Job, JobCategory and Zipcode.
