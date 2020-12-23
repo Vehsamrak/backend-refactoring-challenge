@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ZipcodeRepository")
+ * @ORM\Table(name="zipcode")
  */
 class Zipcode implements EntityInterface, \JsonSerializable
 {
